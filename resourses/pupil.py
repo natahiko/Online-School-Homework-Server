@@ -1,5 +1,6 @@
 from flask import jsonify
 from utils import get_error
+from utils import get_hash
 
 
 class Pupil():
@@ -28,6 +29,9 @@ class Pupil():
         else:
             json['birth_date'] = "'" + json['birth_date'] + "'"
 
+        # hash password
+        json['password'] = get_hash(json['password'])
+
         # try to add to db
         try:
             sql = "INSERT INTO pupils (name, surname, patronymic, class, email, phone, birth_date, school_id, password) " \
@@ -47,6 +51,10 @@ class Pupil():
             return jsonify({
                 "error": "Недостатньо данних"
             }), 400
+
+        # hash password
+        json['password'] = get_hash(json['password'])
+
         try:
             sql = "SELECT * FROM pupils WHERE email='%s' AND password='%s'" % (json['login'], json['password'])
             res = self.db.execute(sql)
