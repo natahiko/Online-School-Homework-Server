@@ -8,3 +8,12 @@ class Database:
 
     def get_connection(self):
         return self.pool.get_connection()
+
+    def execute(self, sql):
+        try:
+            con = self.get_connection()
+            cursor = con.cursor()
+            cursor.execute(sql)
+            con.commit()
+        except Exception as e:
+            raise e

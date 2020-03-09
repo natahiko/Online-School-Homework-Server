@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, request
 from utils import Database, ParserConfig
 from resourses import *
 
@@ -16,11 +16,11 @@ with app.app_context():
     app.database = Database(**config['database'])
 
 # initialise all resourses
-user = User(app.database)
+pupil = Pupil(app.database)
 
-@app.route('/')
+@app.route('/registerpupil', methods=['POST'])
 def hello_world():
-    return user.addUser()
+    return pupil.register(request.get_json())
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(port=2303, debug=True)

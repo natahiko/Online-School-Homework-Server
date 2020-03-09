@@ -1,3 +1,4 @@
 .idea
 venv
 config/conf.json
+test.py
