@@ -18,9 +18,15 @@ with app.app_context():
 # initialise all resourses
 pupil = Pupil(app.database)
 
+
 @app.route('/registerpupil', methods=['POST'])
 def hello_world():
     return pupil.register(request.get_json())
+
+@app.route('/loginpupil', methods=['POST'])
+def hello_world():
+    return pupil.login(request.get_json())
+
 
 if __name__ == '__main__':
     app.run(port=2303, debug=True)
