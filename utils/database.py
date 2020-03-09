@@ -14,6 +14,8 @@ class Database:
             con = self.get_connection()
             cursor = con.cursor()
             cursor.execute(sql)
+            res = cursor.fetchall()
             con.commit()
+            return res
         except Exception as e:
             raise e

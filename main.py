@@ -20,11 +20,11 @@ pupil = Pupil(app.database)
 
 
 @app.route('/registerpupil', methods=['POST'])
-def hello_world():
+def pupils_registrations():
     return pupil.register(request.get_json())
 
 @app.route('/loginpupil', methods=['POST'])
-def hello_world():
+def pupils_login():
     return pupil.login(request.get_json())
 
 

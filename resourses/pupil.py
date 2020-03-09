@@ -40,3 +40,18 @@ class Pupil():
         except Exception as e:
             return get_error(e)
         return "ok", 201
+
+    def login(self, json):
+        # check all fields
+        if ((not 'login' in json) or (not 'password' in json)):
+            return jsonify({
+                "error": "Недостатньо данних"
+            }), 400
+        try:
+            sql = "SELECT * FROM pupils WHERE email='%s' AND password='%s'" % (json['login'], json['password'])
+            res = self.db.execute(sql)
+            if len(res) < 1:
+                return "no", 400
+        except Exception as e:
+            return get_error(e)
+        return "ok", 201
