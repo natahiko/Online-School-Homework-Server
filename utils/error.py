@@ -1,11 +1,12 @@
 from flask import jsonify
 
 
-def get_error(e):
+def get_error(e, isTeacher=0):
     code = str(e)[:4]
     if code == '1062':
         return jsonify({
-            "error": "Користувач з такою поштою вже є в базі даних"
+            "error": "Вчитель з такою поштою або табельним номером вже зареєстрований" if isTeacher
+            else "Учень з такою поштою або учнівським номером вже зареєстрований"
         }), 200
     elif code == '1452':
         return jsonify({
