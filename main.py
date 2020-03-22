@@ -2,6 +2,7 @@ import os
 from flask import Flask, request
 from utils import Database, ParserConfig
 from resourses import *
+import json
 
 path = os.path.dirname(os.path.abspath(__file__))
 
@@ -24,12 +25,13 @@ city = City(app.database)
 
 
 # Треба передати: id (той, що в localstorage -> "authentication")
+# Повертає: name, surname, patronymic, email, phone, education, phd, notes
 @app.route('/getteacherinfo', methods=['GET'])
 def get_teacher_info():
     data = request.get_json()
     if 'id' not in data:
-        return "Недостатньо даних", 400
-    return teacher.get_info(data)
+        return json.dumps({"err": "Недостатньо даних"}), 400
+    return teacher.get_info(data['id'])
 
 
 @app.route('/getCities', methods=['GET'])
@@ -38,7 +40,7 @@ def get_cities():
 
 
 @app.route('/addCity', methods=['POST'])
-def get_cities():
+def add_city():
     return city.add_city(request.get_json())
 
 

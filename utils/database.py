@@ -25,3 +25,4 @@ class Database:
             raise e
         finally:
             con.close()
+

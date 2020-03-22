@@ -64,4 +64,22 @@ class Teacher():
             return get_error(e)
 
     def get_info(self, id):
-        pass
+        try:
+            sql = "SELECT name, surname, patronymic, email, phone, education, phd, notes" \
+                  " FROM teachers WHERE teacher_id='%s';" % id
+            res = self.db.execute(sql)
+            if len(res) < 1:
+                return json.dumps({"err": "Не знайдено вчителя в базі даних"}), 400
+            res = res[0]
+            return json.dumps({
+                "name": res[0],
+                "surname": res[1],
+                "pathronymic": "" if res[2] is None else res[2],
+                "email": res[3],
+                "phone": "" if res[4] is None else res[4],
+                "education": res[5],
+                "phd": res[6],
+                "notes": "" if res[7] is None else res[7],
+            }), 200
+        except Exception as e:
+            return get_error(e)
