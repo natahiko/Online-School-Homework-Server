@@ -10,7 +10,8 @@ class Admin():
 
     def register(self, json):
         # check all fields
-        if (('login' not in json) or ('email' not in json) or ('password' not in json)):
+        if (('login' not in json) or ('email' not in json) or ('password' not in json)
+            or ('name' not in json) or ('surname' not in json)):
             return jsonify({
                 "error": "Недостатньо данних"
             }), 400
@@ -26,9 +27,10 @@ class Admin():
 
         # try to add to db
         try:
-            sql = "INSERT INTO admins (login, email, password, notes) " \
+            sql = "INSERT INTO admins (login, email, password, notes, name, surname) " \
                   "VALUES ('%s','%s', '%s', %s);" % (json['login'], json['email'],
-                                                     json['password'], json['notes'])
+                                                     json['password'], json['notes'],
+                                                     json['name'], json['surname'])
             self.db.execute(sql)
         except Exception as e:
             return get_error(e)

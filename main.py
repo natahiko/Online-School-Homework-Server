@@ -19,7 +19,16 @@ with app.app_context():
 pupil = Pupil(app.database)
 teacher = Teacher(app.database)
 admin = Admin(app.database)
+school = School(app.database)
 
+
+@app.route('/getCities', methods=['GET'])
+def get_cities():
+    return school.get_cities()
+
+@app.route('/addSchool', methods=['POST'])
+def school_add():
+    return school.add(request.get_json())
 
 @app.route('/registerpupil', methods=['POST'])
 def pupils_registrations():
@@ -33,6 +42,7 @@ def teacher_registrations():
 
 @app.route('/registeradmin', methods=['POST'])
 def admin_registrations():
+    print(request.get_json())
     return admin.register(request.get_json())
 
 
