@@ -20,11 +20,16 @@ pupil = Pupil(app.database)
 teacher = Teacher(app.database)
 admin = Admin(app.database)
 school = School(app.database)
+city = City(app.database)
 
 
 @app.route('/getCities', methods=['GET'])
 def get_cities():
-    return school.get_cities()
+    return city.get_cities()
+
+@app.route('/addCity', methods=['POST'])
+def get_cities():
+    return city.add_city(request.get_json())
 
 @app.route('/addSchool', methods=['POST'])
 def school_add():

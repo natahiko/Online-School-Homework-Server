@@ -9,13 +9,6 @@ class School():
     def __init__(self, database):
         self.db = database
 
-    def get_cities(self):
-        try:
-            res = self.db.execute("SELECT id, city FROM cities;")
-            return json.dumps(res), 200
-        except Exception as e:
-            return get_error(e)
-
     def add(self, data):
         # check all fields
         if ((not 'cityid' in data) or (not 'name' in data) or (not 'street' in data) or
