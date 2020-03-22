@@ -21,7 +21,7 @@ class City():
         if 'city' not in data:
             return jsonify({"error": "Недостатньо данних"}), 400
         if 'notes' in data:
-            notes = "'"+data['notes']+"'"
+            notes = "'" + data['notes'] + "'"
         else:
             notes = None
         # try to add to db

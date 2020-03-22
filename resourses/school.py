@@ -4,6 +4,7 @@ from utils import get_hash
 import json
 import random
 
+
 class School():
 
     def __init__(self, database):
@@ -28,7 +29,7 @@ class School():
         # generate school code
         code = None
         while code is None:
-            arr = [str(random.randint(0,9)) for _ in range(10)]
+            arr = [str(random.randint(0, 9)) for _ in range(10)]
             code = "".join(arr)
             print(code)
             res = self.db.execute("SELECT code FROM schools WHERE code='%s';" % code)
@@ -39,9 +40,9 @@ class School():
         try:
             sql = "INSERT INTO schools (code, name, city, region, street, house_number, phone, notes) " \
                   "VALUES ('%s', '%s','%s', %s, '%s', '%s', '%s', %s);" % (code, data['name'],
-                                                                                        data['cityid'], data['region'],
-                                                                                        data['street'], data['house'],
-                                                                                        data['phone'], data['notes'])
+                                                                           data['cityid'], data['region'],
+                                                                           data['street'], data['house'],
+                                                                           data['phone'], data['notes'])
             self.db.execute(sql)
             return json.dumps({"code": code}), 200
         except Exception as e:

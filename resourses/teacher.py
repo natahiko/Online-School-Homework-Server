@@ -3,6 +3,7 @@ from utils import get_error
 from utils import get_hash
 import json
 
+
 class Teacher():
     def __init__(self, database):
         self.db = database
@@ -14,7 +15,7 @@ class Teacher():
             return jsonify({
                 "error": "Недостатньо данних"
             }), 400
-        if(not 'phd' in json):
+        if (not 'phd' in json):
             json['phd'] = False
         # check fields that can be NULL
         if not 'patronymic' in json:
@@ -32,11 +33,12 @@ class Teacher():
         # try to add to db
         try:
             sql = "INSERT INTO teachers (teacher_id, name, surname, patronymic, phd, email, phone, school_id, education, password) " \
-                  "VALUES ('%s', '%s','%s', %s, '%s', '%s', %s, '%s', '%s','%s');" % (json['id'],json['name'], json['surname'],
-                                                                               json['patronymic'], json['phd'],
-                                                                               json['email'], json['phone'],
-                                                                               json['school_id'], json['education'],
-                                                                               json['password'])
+                  "VALUES ('%s', '%s','%s', %s, '%s', '%s', %s, '%s', '%s','%s');" % (
+                  json['id'], json['name'], json['surname'],
+                  json['patronymic'], json['phd'],
+                  json['email'], json['phone'],
+                  json['school_id'], json['education'],
+                  json['password'])
             self.db.execute(sql)
         except Exception as e:
             return get_error(e, 1)
@@ -57,6 +59,9 @@ class Teacher():
             res = self.db.execute(sql)
             if len(res) < 1:
                 return "no", 400
-            return json.dumps({"id":res[0][0]}), 200
+            return json.dumps({"id": res[0][0]}), 200
         except Exception as e:
             return get_error(e)
+
+    def get_info(self, id):
+        pass

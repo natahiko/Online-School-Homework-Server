@@ -23,17 +23,29 @@ school = School(app.database)
 city = City(app.database)
 
 
+# Треба передати: id (той, що в localstorage -> "authentication")
+@app.route('/getteacherinfo', methods=['GET'])
+def get_teacher_info():
+    data = request.get_json()
+    if 'id' not in data:
+        return "Недостатньо даних", 400
+    return teacher.get_info(data)
+
+
 @app.route('/getCities', methods=['GET'])
 def get_cities():
     return city.get_cities()
+
 
 @app.route('/addCity', methods=['POST'])
 def get_cities():
     return city.add_city(request.get_json())
 
+
 @app.route('/addSchool', methods=['POST'])
 def school_add():
     return school.add(request.get_json())
+
 
 @app.route('/registerpupil', methods=['POST'])
 def pupils_registrations():

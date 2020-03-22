@@ -11,7 +11,7 @@ class Admin():
     def register(self, json):
         # check all fields
         if (('login' not in json) or ('email' not in json) or ('password' not in json)
-            or ('name' not in json) or ('surname' not in json)):
+                or ('name' not in json) or ('surname' not in json)):
             return jsonify({
                 "error": "Недостатньо данних"
             }), 400
@@ -50,6 +50,6 @@ class Admin():
             res = self.db.execute(sql)
             if len(res) < 1:
                 return "no", 400
-            return json.dumps({"id":res[0][0]}), 200
+            return json.dumps({"id": res[0][0]}), 200
         except Exception as e:
             return get_error(e)

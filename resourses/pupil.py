@@ -11,7 +11,7 @@ class Pupil():
     def register(self, json):
         # check all fields
         if ((not 'id' in json) or (not 'name' in json) or (not 'surname' in json) or (not 'class' in json) or (
-        not 'email' in json) or
+                not 'email' in json) or
                 (not 'school_id' in json) or (not 'password' in json)):
             return jsonify({
                 "error": "Недостатньо данних"
@@ -38,11 +38,11 @@ class Pupil():
         try:
             sql = "INSERT INTO pupils (student_id,name, surname, patronymic, class, email, phone, birth_date, school_id, password) " \
                   "VALUES ('%s','%s', '%s', %s, '%s', '%s', %s, %s, '%s', '%s');" % (
-                  json['id'], json['name'], json['surname'],
-                  json['patronymic'], json['class'],
-                  json['email'], json['phone'],
-                  json['birth_date'], json['school_id'],
-                  json['password'])
+                      json['id'], json['name'], json['surname'],
+                      json['patronymic'], json['class'],
+                      json['email'], json['phone'],
+                      json['birth_date'], json['school_id'],
+                      json['password'])
             self.db.execute(sql)
         except Exception as e:
             return get_error(e)
@@ -61,6 +61,6 @@ class Pupil():
             res = self.db.execute(sql)
             if len(res) < 1:
                 return "no", 400
-            return json.dumps({"id":res[0][0]}), 200
+            return json.dumps({"id": res[0][0]}), 200
         except Exception as e:
             return get_error(e)
