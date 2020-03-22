@@ -20,5 +20,6 @@ class Database:
                 return res
             except:
                 con.commit()
+                return con.insert_id()
         except Exception as e:
             raise e

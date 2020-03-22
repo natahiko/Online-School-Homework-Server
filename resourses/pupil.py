@@ -1,6 +1,7 @@
 from flask import jsonify
 from utils import get_error
 from utils import get_hash
+import json
 
 
 class Pupil():
@@ -47,19 +48,19 @@ class Pupil():
             return get_error(e)
         return "ok", 201
 
-    def login(self, json):
+    def login(self, data):
         # check all fields
-        if ((not 'login' in json) or (not 'password' in json)):
+        if ((not 'login' in data) or (not 'password' in data)):
             return jsonify({
                 "error": "Недостатньо данних"
             }), 400
         # hash password
-        json['password'] = get_hash(json['password'])
+        data['password'] = get_hash(data['password'])
         try:
-            sql = "SELECT * FROM pupils WHERE email='%s' AND password='%s';" % (json['login'], json['password'])
+            sql = "SELECT * FROM pupils WHERE email='%s' AND password='%s';" % (data['login'], data['password'])
             res = self.db.execute(sql)
             if len(res) < 1:
                 return "no", 400
-            return "ok", 200
+            return json.dumps({"id":res[0][0]}), 200
         except Exception as e:
             return get_error(e)
