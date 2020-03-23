@@ -64,3 +64,25 @@ class Pupil():
             return json.dumps({"id": res[0][0]}), 200
         except Exception as e:
             return get_error(e)
+
+    def get_info(self, id):
+        try:
+            sql = "SELECT * FROM pupils INNER JOIN schools ON schools.code = pupils.school_id WHERE student_id='%s';" % id
+            res = self.db.execute(sql)
+            if len(res) < 1:
+                return json.dumps({"error": "Не знайдено учня в базі даних"}), 400
+            res = res[0]
+            return json.dumps({
+                "name": res[1],
+                "surname": res[2],
+                "pathronymic": "" if res[3] is None else res[3],
+                "email": res[5],
+                "phone": "" if res[6] is None else res[6],
+                "class": res[4],
+                "birthdate": "" if res[7] is None else res[7],
+                "schoolid": res[9],
+                "schoolname": res[12],
+                "notes": "" if res[8] is None else res[8]
+            }), 200
+        except Exception as e:
+            return get_error(e)

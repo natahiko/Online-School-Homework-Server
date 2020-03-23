@@ -47,3 +47,23 @@ class School():
             return json.dumps({"code": code}), 200
         except Exception as e:
             return get_error(e)
+
+    def get_info(self, id: str):
+        try:
+            sql = "SELECT * FROM schools INNER JOIN cities ON schools.city = cities.id WHERE code='%s';" % id
+            res = self.db.execute(sql)
+            if len(res) < 1:
+                return json.dumps({"err": "Не знайдено вчителя в базі даних"}), 400
+            res = res[0]
+            print(res)
+            return json.dumps({
+                "name": res[1],
+                "city": res[10],
+                "region": "" if res[3] is None else res[3],
+                "street": res[4],
+                "house": res[5],
+                "phone": res[6],
+                "notes": "" if res[8] is None else res[8]
+            }), 200
+        except Exception as e:
+            return get_error(e)

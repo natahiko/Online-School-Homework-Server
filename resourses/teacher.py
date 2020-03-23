@@ -34,11 +34,11 @@ class Teacher():
         try:
             sql = "INSERT INTO teachers (teacher_id, name, surname, patronymic, phd, email, phone, school_id, education, password) " \
                   "VALUES ('%s', '%s','%s', %s, '%s', '%s', %s, '%s', '%s','%s');" % (
-                  json['id'], json['name'], json['surname'],
-                  json['patronymic'], json['phd'],
-                  json['email'], json['phone'],
-                  json['school_id'], json['education'],
-                  json['password'])
+                      json['id'], json['name'], json['surname'],
+                      json['patronymic'], json['phd'],
+                      json['email'], json['phone'],
+                      json['school_id'], json['education'],
+                      json['password'])
             self.db.execute(sql)
         except Exception as e:
             return get_error(e, 1)
@@ -63,23 +63,24 @@ class Teacher():
         except Exception as e:
             return get_error(e)
 
-    def get_info(self, id):
+    def get_info(self, id: str):
         try:
-            sql = "SELECT name, surname, patronymic, email, phone, education, phd, notes" \
-                  " FROM teachers WHERE teacher_id='%s';" % id
+            sql = "SELECT * FROM teachers INNER JOIN schools ON schools.code = teachers.school_id WHERE teacher_id='%s';" % id
             res = self.db.execute(sql)
             if len(res) < 1:
-                return json.dumps({"err": "Не знайдено вчителя в базі даних"}), 400
+                return json.dumps({"error": "Не знайдено вчителя в базі даних"}), 400
             res = res[0]
             return json.dumps({
-                "name": res[0],
-                "surname": res[1],
-                "pathronymic": "" if res[2] is None else res[2],
-                "email": res[3],
-                "phone": "" if res[4] is None else res[4],
-                "education": res[5],
-                "phd": res[6],
-                "notes": "" if res[7] is None else res[7],
+                "name": res[1],
+                "surname": res[2],
+                "pathronymic": "" if res[3] is None else res[3],
+                "email": res[4],
+                "phone": "" if res[5] is None else res[5],
+                "education": res[6],
+                "phd": res[7],
+                "schoolid": res[9],
+                "schoolname": res[12],
+                "notes": "" if res[8] is None else res[8]
             }), 200
         except Exception as e:
             return get_error(e)
