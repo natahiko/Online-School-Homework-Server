@@ -35,6 +35,7 @@ def get_school_info():
         return json.dumps({"error": "Некоректні дані"}), 400
     return school.get_info(data['id'])
 
+
 # Треба передати: id (той, що в localstorage -> "authentication")
 # Повертає: name, surname, patronymic, email, phone, education, phd, schoolid, notes, schoolname
 @app.route('/getteacherinfo', methods=['GET'])
@@ -45,6 +46,18 @@ def get_teacher_info():
     if data['id'] == "":
         return json.dumps({"error": "Некоректні дані"}), 400
     return teacher.get_info(data['id'])
+
+
+# Треба передати: id (той, що в localstorage -> "authentication")
+# Повертає: login, email, password, notes, name, surname
+@app.route('/getadmininfo', methods=['GET'])
+def get_admin_info():
+    data = request.get_json()
+    if 'id' not in data:
+        return json.dumps({"error": "Недостатньо даних"}), 400
+    if data['id'] == "":
+        return json.dumps({"error": "Некоректні дані"}), 400
+    return admin.get_info(data['id'])
 
 
 # Треба передати: id (той, що в localstorage -> "authentication")
