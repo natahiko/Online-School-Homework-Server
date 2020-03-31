@@ -23,6 +23,16 @@ admin = Admin(app.database)
 school = School(app.database)
 city = City(app.database)
 
+# Треба передати: id (code)
+# Повертає:
+# @app.route('/getteachersubjects', methods=['GET'])
+# def get_teacher_subjects():
+#     data = request.get_json()
+#     if 'id' not in data:
+#         return json.dumps({"error": "Недостатньо даних"}), 400
+#     if data['id'] == "":
+#         return json.dumps({"error": "Некоректні дані"}), 400
+#     return school.get_info(data['id'])
 
 # Треба передати: id (code)
 # Повертає: name, city, region, street, house, phone, notes
