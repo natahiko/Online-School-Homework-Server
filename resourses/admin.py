@@ -64,10 +64,19 @@ class Admin():
             return json.dumps({
                 "login": res[1],
                 "email": res[2],
-                "password": res[3],
                 "notes": "" if res[4] is None else res[4],
                 "name": res[5],
                 "surname": res[6]
             }), 200
         except Exception as e:
             return get_error(e)
+
+    def edit_info(self, data):
+        try:
+            sql = "UPDATE admins SET name='%s', surname='%s', email='%s', notes='%s' " \
+                  "WHERE id=%s;" % (data['name'], data['surname'], data['email'], data['notes'], data['id'])
+            print(sql)
+            res = self.db.execute(sql)
+        except Exception as e:
+            return get_error(e)
+        return json.dumps({"data": True}), 200

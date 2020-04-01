@@ -73,7 +73,7 @@ class Teacher():
             return json.dumps({
                 "name": res[1],
                 "surname": res[2],
-                "pathronymic": "" if res[3] is None else res[3],
+                "patronymic": "" if res[3] is None else res[3],
                 "email": res[4],
                 "phone": "" if res[5] is None else res[5],
                 "education": res[6],
@@ -84,3 +84,16 @@ class Teacher():
             }), 200
         except Exception as e:
             return get_error(e)
+
+    def edit_info(self, data):
+        try:
+
+            sql = "UPDATE teachers SET name='%s', surname='%s', patronymic='%s', email='%s', phone='%s'," \
+                  " education='%s', phd='%s', notes='%s' WHERE teacher_id=%s;" % (data['name'], data['surname'],
+                                                                                  data['patronymic'], data['email'],
+                                                                                  data['phone'], data['education'],
+                                                                                  data['phd'], data['notes'], data['id'])
+            res = self.db.execute(sql)
+        except Exception as e:
+            return get_error(e)
+        return json.dumps({"data": True}), 200

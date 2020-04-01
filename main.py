@@ -1,6 +1,6 @@
 import os
 from flask import Flask, request
-from utils import Database, ParserConfig
+from utils import Database, ParserConfig, get_hash
 from resourses import *
 import json
 
@@ -25,6 +25,10 @@ city = City(app.database)
 
 # Треба передати: id (code)
 # Повертає:
+@app.route('/getpass', methods=['GET'])
+def get_pass():
+    return get_hash(request.get_json()['pass']), 200
+
 # @app.route('/getteachersubjects', methods=['GET'])
 # def get_teacher_subjects():
 #     data = request.get_json()
@@ -36,7 +40,7 @@ city = City(app.database)
 
 # Треба передати: id (code)
 # Повертає: name, city, region, street, house, phone, notes
-@app.route('/getschoolinfo', methods=['GET'])
+@app.route('/getschoolinfo', methods=['POST'])
 def get_school_info():
     data = request.get_json()
     if 'id' not in data:
@@ -46,21 +50,29 @@ def get_school_info():
     return school.get_info(data['id'])
 
 
-# Треба передати: id (той, що в localstorage -> "authentication")
+# Треба передати: id
 # Повертає: name, surname, patronymic, email, phone, education, phd, schoolid, notes, schoolname
-@app.route('/getteacherinfo', methods=['GET'])
+@app.route('/getteacherinfo', methods=['POST'])
 def get_teacher_info():
     data = request.get_json()
     if 'id' not in data:
-        return json.dumps({"error": "Недостатньо даних"}), 400
+        return json.dumps({"error": "Недостатньо даних"}), 200
     if data['id'] == "":
-        return json.dumps({"error": "Некоректні дані"}), 400
+        return json.dumps({"error": "Некоректні дані"}), 200
     return teacher.get_info(data['id'])
 
+@app.route('/editteacherinfo', methods=['POST'])
+def edit_teacher_info():
+    data = request.get_json()
+    if 'id' not in data:
+        return json.dumps({"error": "Недостатньо даних"}), 200
+    if data['id'] == "":
+        return json.dumps({"error": "Некоректні дані"}), 200
+    return teacher.edit_info(data)
 
-# Треба передати: id (той, що в localstorage -> "authentication")
-# Повертає: login, email, password, notes, name, surname
-@app.route('/getadmininfo', methods=['GET'])
+# Треба передати: id
+# Повертає: login, email, notes, name, surname
+@app.route('/getadmininfo', methods=['POST'])
 def get_admin_info():
     data = request.get_json()
     if 'id' not in data:
@@ -69,10 +81,18 @@ def get_admin_info():
         return json.dumps({"error": "Некоректні дані"}), 400
     return admin.get_info(data['id'])
 
+@app.route('/editadmininfo', methods=['POST'])
+def edit_admin_info():
+    data = request.get_json()
+    if 'id' not in data:
+        return json.dumps({"error": "Недостатньо даних"}), 400
+    if data['id'] == "":
+        return json.dumps({"error": "Некоректні дані"}), 400
+    return admin.edit_info(data)
 
-# Треба передати: id (той, що в localstorage -> "authentication")
+# Треба передати: id
 # Повертає: name, surname, patronymic, email, phone, class, birthdate, schoolid, notes, schoolname
-@app.route('/getpupilinfo', methods=['GET'])
+@app.route('/getpupilinfo', methods=['POST'])
 def get_pupil_info():
     data = request.get_json()
     if 'id' not in data:
@@ -81,6 +101,14 @@ def get_pupil_info():
         return json.dumps({"error": "Некоректні дані"}), 400
     return pupil.get_info(data['id'])
 
+@app.route('/editpupilinfo', methods=['POST'])
+def edit_pupil_info():
+    data = request.get_json()
+    if 'id' not in data:
+        return json.dumps({"error": "Недостатньо даних"}), 400
+    if data['id'] == "":
+        return json.dumps({"error": "Некоректні дані"}), 400
+    return pupil.edit_info(data)
 
 @app.route('/getCities', methods=['GET'])
 def get_cities():
