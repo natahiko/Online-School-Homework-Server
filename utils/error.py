@@ -7,12 +7,12 @@ def get_error(e, isTeacher=0):
         return jsonify({
             "error": "Вчитель з такою поштою або табельним номером вже зареєстрований" if isTeacher
             else "Учень з такою поштою або учнівським номером вже зареєстрований"
-        }), 200
+        }), 400
     elif code == '1452':
         return jsonify({
             "error": "Школи з таким кодом не існує"
-        }), 200
+        }), 400
     else:
         return jsonify({
             "error": str(e)
-        }), 200
+        }), 400

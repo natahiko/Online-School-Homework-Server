@@ -23,11 +23,13 @@ admin = Admin(app.database)
 school = School(app.database)
 city = City(app.database)
 
+
 # Треба передати: id (code)
 # Повертає:
 @app.route('/getpass', methods=['GET'])
 def get_pass():
     return get_hash(request.get_json()['pass']), 200
+
 
 # @app.route('/getteachersubjects', methods=['GET'])
 # def get_teacher_subjects():
@@ -61,6 +63,7 @@ def get_teacher_info():
         return json.dumps({"error": "Некоректні дані"}), 200
     return teacher.get_info(data['id'])
 
+
 @app.route('/editteacherinfo', methods=['POST'])
 def edit_teacher_info():
     data = request.get_json()
@@ -69,6 +72,7 @@ def edit_teacher_info():
     if data['id'] == "":
         return json.dumps({"error": "Некоректні дані"}), 200
     return teacher.edit_info(data)
+
 
 # Треба передати: id
 # Повертає: login, email, notes, name, surname
@@ -81,6 +85,7 @@ def get_admin_info():
         return json.dumps({"error": "Некоректні дані"}), 400
     return admin.get_info(data['id'])
 
+
 @app.route('/editadmininfo', methods=['POST'])
 def edit_admin_info():
     data = request.get_json()
@@ -89,6 +94,7 @@ def edit_admin_info():
     if data['id'] == "":
         return json.dumps({"error": "Некоректні дані"}), 400
     return admin.edit_info(data)
+
 
 # Треба передати: id
 # Повертає: name, surname, patronymic, email, phone, class, birthdate, schoolid, notes, schoolname
@@ -101,6 +107,7 @@ def get_pupil_info():
         return json.dumps({"error": "Некоректні дані"}), 400
     return pupil.get_info(data['id'])
 
+
 @app.route('/editpupilinfo', methods=['POST'])
 def edit_pupil_info():
     data = request.get_json()
@@ -109,6 +116,7 @@ def edit_pupil_info():
     if data['id'] == "":
         return json.dumps({"error": "Некоректні дані"}), 400
     return pupil.edit_info(data)
+
 
 @app.route('/getCities', methods=['GET'])
 def get_cities():

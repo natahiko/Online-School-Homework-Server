@@ -87,12 +87,12 @@ class Teacher():
 
     def edit_info(self, data):
         try:
-
             sql = "UPDATE teachers SET name='%s', surname='%s', patronymic='%s', email='%s', phone='%s'," \
                   " education='%s', phd='%s', notes='%s' WHERE teacher_id=%s;" % (data['name'], data['surname'],
                                                                                   data['patronymic'], data['email'],
                                                                                   data['phone'], data['education'],
-                                                                                  data['phd'], data['notes'], data['id'])
+                                                                                  data['phd'], data['notes'],
+                                                                                  data['id'])
             res = self.db.execute(sql)
         except Exception as e:
             return get_error(e)
