@@ -1,6 +1,5 @@
 from flask import jsonify
-from utils import get_error
-from utils import get_hash
+from utils import get_error, get_hash, check_id, check_all_parameters, check_for_null
 import json
 
 
@@ -10,26 +9,14 @@ class Pupil():
 
     def register(self, json):
         # check all fields
-        if ((not 'id' in json) or (not 'name' in json) or (not 'surname' in json) or (not 'class' in json) or (
-                not 'email' in json) or
-                (not 'school_id' in json) or (not 'password' in json)):
-            return jsonify({
-                "error": "Недостатньо данних"
-            }), 400
+        if not check_all_parameters(json, ['id', 'name', 'surname', 'surname', 'school_id', 'password', 'email', 'class']):
+            return jsonify({"error": "Недостатньо данних"}), 400
 
         # check fields that can be NULL
-        if not 'patronymic' in json:
-            json['patronymic'] = 'NULL'
-        else:
-            json['patronymic'] = "'" + json['patronymic'] + "'"
-        if not 'phone' in json:
-            json['phone'] = 'NULL'
-        else:
-            json['phone'] = "'" + json['phone'] + "'"
-        if not 'birth_date' in json:
-            json['birth_date'] = 'NULL'
-        else:
-            json['birth_date'] = "'" + json['birth_date'] + "'"
+
+        json['patronymic'] = check_for_null(json, 'patronymic')
+        json['phone'] = check_for_null(json, 'phone')
+        json['birth_date'] = check_for_null(json, 'birth_date')
 
         # hash password
         json['password'] = get_hash(json['password'])
@@ -50,10 +37,8 @@ class Pupil():
 
     def login(self, data):
         # check all fields
-        if ((not 'login' in data) or (not 'password' in data)):
-            return jsonify({
-                "error": "Недостатньо данних"
-            }), 400
+        if not check_all_parameters(data, ['login', 'password']):
+            return jsonify({ "error": "Недостатньо данних"}), 400
         # hash password
         data['password'] = get_hash(data['password'])
         try:
@@ -88,6 +73,8 @@ class Pupil():
             return get_error(e)
 
     def edit_info(self, data):
+        if not check_id(data):
+            return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
         try:
             sql = "UPDATE pupils SET name='%s', surname='%s', patronymic='%s', email='%s', phone='%s'," \
                   " class='%s', notes='%s' WHERE student_id=%s;" % (data['name'], data['surname'], data['patronymic'],

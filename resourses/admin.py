@@ -1,6 +1,5 @@
 from flask import jsonify
-from utils import get_error
-from utils import get_hash
+from utils import get_error, get_hash, check_id, check_all_parameters, check_for_null
 import json
 
 
@@ -10,25 +9,18 @@ class Admin():
 
     def register(self, json):
         # check all fields
-        if (('login' not in json) or ('email' not in json) or ('password' not in json)
-                or ('name' not in json) or ('surname' not in json)):
-            return jsonify({
-                "error": "Недостатньо данних"
-            }), 400
+        if not check_all_parameters(json, ['login', 'name', 'surname', 'password', 'email']):
+            return jsonify({ "error": "Недостатньо данних"}), 400
 
         # check fields that can be NULL
-        if not 'notes' in json:
-            json['notes'] = 'NULL'
-        else:
-            json['notes'] = "'" + json['notes'] + "'"
-
+        json['notes'] = check_for_null(json, 'notes')
         # hash password
         json['password'] = get_hash(json['password'])
 
         # try to add to db
         try:
             sql = "INSERT INTO admins (login, email, password, notes, name, surname) " \
-                  "VALUES ('%s','%s', '%s', %s);" % (json['login'], json['email'],
+                  "VALUES ('%s','%s', '%s', %s, '%s', '%s');" % (json['login'], json['email'],
                                                      json['password'], json['notes'],
                                                      json['name'], json['surname'])
             self.db.execute(sql)
@@ -38,10 +30,8 @@ class Admin():
 
     def login(self, data):
         # check all fields
-        if ((not 'login' in data) or (not 'password' in data)):
-            return jsonify({
-                "error": "Недостатньо данних"
-            }), 400
+        if not check_all_parameters(data, ['login', 'password']):
+            return jsonify({ "error": "Недостатньо данних" }), 400
         # hash password
         data['password'] = get_hash(data['password'])
         try:
@@ -72,6 +62,8 @@ class Admin():
             return get_error(e)
 
     def edit_info(self, data):
+        if not check_id(data):
+            return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
         try:
             sql = "UPDATE admins SET name='%s', surname='%s', email='%s', notes='%s' " \
                   "WHERE id=%s;" % (data['name'], data['surname'], data['email'], data['notes'], data['id'])

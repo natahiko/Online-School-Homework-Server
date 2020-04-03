@@ -1,6 +1,5 @@
 from flask import jsonify
-from utils import get_error
-from utils import get_hash
+from utils import get_error, check_parameter, check_for_null, check_all_parameters
 import json
 import random
 
@@ -12,19 +11,13 @@ class School():
 
     def add(self, data):
         # check all fields
-        if ((not 'cityid' in data) or (not 'name' in data) or (not 'street' in data) or
-                (not 'house' in data) or (not 'phone' in data)):
+        if not check_all_parameters(json, ['cityid', 'name', 'street', 'house', 'phone']):
             return jsonify({"error": "Недостатньо данних"}), 400
 
         # check fields that can be NULL
-        if not 'notes' in data:
-            data['notes'] = 'NULL'
-        else:
-            data['notes'] = "'" + data['notes'] + "'"
-        if not 'region' in data:
-            data['region'] = 'NULL'
-        else:
-            data['region'] = "'" + data['region'] + "'"
+
+        data['notes'] = check_for_null(data, 'notes')
+        data['region'] = check_for_null(data, 'region')
 
         # generate school code
         code = None

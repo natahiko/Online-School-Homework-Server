@@ -1,6 +1,5 @@
 from flask import jsonify
-from utils import get_error
-from utils import get_hash
+from utils import get_error, get_hash, check_id, check_for_null, check_all_parameters
 import json
 
 
@@ -10,22 +9,13 @@ class Teacher():
 
     def register(self, json):
         # check all fields
-        if ((not 'id' in json) or (not 'name' in json) or (not 'surname' in json) or (not 'email' in json) or
-                (not 'school_id' in json) or (not 'password' in json) or (not 'education' in json)):
-            return jsonify({
-                "error": "Недостатньо данних"
-            }), 400
+        if not check_all_parameters(json, ['id', 'name', 'surname', 'email', 'school_id', 'password', 'education']):
+            return jsonify({"error": "Недостатньо данних"}), 400
         if (not 'phd' in json):
             json['phd'] = False
         # check fields that can be NULL
-        if not 'patronymic' in json:
-            json['patronymic'] = 'NULL'
-        else:
-            json['patronymic'] = "'" + json['patronymic'] + "'"
-        if not 'phone' in json:
-            json['phone'] = 'NULL'
-        else:
-            json['phone'] = "'" + json['phone'] + "'"
+        json['patronymic'] = check_for_null(json, 'patronymic')
+        json['phone'] = check_for_null(json, 'phone')
 
         # hash password
         json['password'] = get_hash(json['password'])
@@ -46,10 +36,8 @@ class Teacher():
 
     def login(self, data):
         # check all fields
-        if ((not 'login' in data) or (not 'password' in data)):
-            return jsonify({
-                "error": "Недостатньо данних"
-            }), 400
+        if not check_all_parameters(data, ['login', 'password']):
+            return jsonify({"error": "Недостатньо данних"}), 400
 
         # hash password
         data['password'] = get_hash(data['password'])
@@ -86,6 +74,8 @@ class Teacher():
             return get_error(e)
 
     def edit_info(self, data):
+        if not check_id(data):
+            return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
         try:
             sql = "UPDATE teachers SET name='%s', surname='%s', patronymic='%s', email='%s', phone='%s'," \
                   " education='%s', phd='%s', notes='%s' WHERE teacher_id=%s;" % (data['name'], data['surname'],

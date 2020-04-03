@@ -1,8 +1,6 @@
 from flask import jsonify
-from utils import get_error
-from utils import get_hash
+from utils import get_error, check_for_null, check_parameter
 import json
-import random
 
 
 class City():
@@ -18,12 +16,9 @@ class City():
             return get_error(e)
 
     def add_city(self, data):
-        if 'city' not in data:
+        if check_parameter(data, 'city'):
             return jsonify({"error": "Недостатньо данних"}), 400
-        if 'notes' in data:
-            notes = "'" + data['notes'] + "'"
-        else:
-            notes = None
+        notes = check_for_null(data, 'notes')
         # try to add to db
         try:
             sql = "INSERT INTO cities (city, notes) VALUES ('%s','%s');" % (data['city'], notes)

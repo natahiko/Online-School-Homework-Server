@@ -16,3 +16,30 @@ def get_error(e, isTeacher=0):
         return jsonify({
             "error": str(e)
         }), 400
+
+
+def check_id(data):
+    if 'id' not in data:
+        return False
+    if data['id'] == "":
+        return False
+    return True
+
+
+def check_parameter(data, param):
+    if param not in data:
+        return False
+    if data[param] == "":
+        return False
+    return True
+
+
+def check_all_parameters(data: object, params):
+    return all([check_parameter(data, x) for x in params])
+
+
+def check_for_null(data, param):
+    if not param in data:
+        return 'NULL'
+    else:
+        return "'" + data[param] + "'"
