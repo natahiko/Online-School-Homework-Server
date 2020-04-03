@@ -32,6 +32,29 @@ def get_pass():
     return get_hash(request.get_json()['pass']), 200
 
 
+@app.route('/gethometaskinfo', methods=['POST'])
+def get_hometask_info():
+    data = request.get_json()
+    if check_id(data):
+        return subject.get_hometask_info(data['id'])
+    return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
+
+
+@app.route('/getsubjecthometasks', methods=['POST'])
+def get_subjects_hometasks():
+    data = request.get_json()
+    if check_id(data):
+        return subject.get_subjects_hometasks(data['id'])
+    return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
+
+@app.route('/getpupilsubjects', methods=['POST'])
+def get_pupil_subjects():
+    data = request.get_json()
+    if check_id(data):
+        return subject.get_pupil_subjects(data['id'])
+    return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
+
+
 @app.route('/getteachersubjects', methods=['POST'])
 def get_teacher_subjects():
     data = request.get_json()

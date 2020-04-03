@@ -12,9 +12,7 @@ def get_error(e, isTeacher=0):
             "error": "Школи з таким кодом не існує"
         }), 400
     else:
-        return json.dumps({
-            "error": str(e)
-        }), 400
+        return json.dumps({"error": str(e)}), 400
 
 
 def check_id(data):
