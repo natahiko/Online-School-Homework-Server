@@ -1,4 +1,3 @@
-from flask import jsonify
 from utils import get_error, get_hash, check_id, check_all_parameters, check_for_null
 import json
 
@@ -10,7 +9,7 @@ class Admin():
     def register(self, json):
         # check all fields
         if not check_all_parameters(json, ['login', 'name', 'surname', 'password', 'email']):
-            return jsonify({ "error": "Недостатньо данних"}), 400
+            return json.dumps({"error": "Недостатньо данних"}), 400
 
         # check fields that can be NULL
         json['notes'] = check_for_null(json, 'notes')
@@ -21,8 +20,8 @@ class Admin():
         try:
             sql = "INSERT INTO admins (login, email, password, notes, name, surname) " \
                   "VALUES ('%s','%s', '%s', %s, '%s', '%s');" % (json['login'], json['email'],
-                                                     json['password'], json['notes'],
-                                                     json['name'], json['surname'])
+                                                                 json['password'], json['notes'],
+                                                                 json['name'], json['surname'])
             self.db.execute(sql)
         except Exception as e:
             return get_error(e)
@@ -31,7 +30,7 @@ class Admin():
     def login(self, data):
         # check all fields
         if not check_all_parameters(data, ['login', 'password']):
-            return jsonify({ "error": "Недостатньо данних" }), 400
+            return json.dumps({"error": "Недостатньо данних"}), 400
         # hash password
         data['password'] = get_hash(data['password'])
         try:
@@ -67,7 +66,7 @@ class Admin():
         try:
             sql = "UPDATE admins SET name='%s', surname='%s', email='%s', notes='%s' " \
                   "WHERE id=%s;" % (data['name'], data['surname'], data['email'], data['notes'], data['id'])
-            print(sql)
+
             res = self.db.execute(sql)
         except Exception as e:
             return get_error(e)

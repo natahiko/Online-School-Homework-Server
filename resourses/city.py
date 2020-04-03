@@ -1,4 +1,3 @@
-from flask import jsonify
 from utils import get_error, check_for_null, check_parameter
 import json
 
@@ -17,7 +16,7 @@ class City():
 
     def add_city(self, data):
         if check_parameter(data, 'city'):
-            return jsonify({"error": "Недостатньо данних"}), 400
+            return json.dumps({"error": "Недостатньо данних"}), 400
         notes = check_for_null(data, 'notes')
         # try to add to db
         try:

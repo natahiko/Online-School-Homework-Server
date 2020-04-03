@@ -1,4 +1,3 @@
-from flask import jsonify
 from utils import get_error, get_hash, check_id, check_all_parameters, check_for_null
 import json
 
@@ -9,8 +8,9 @@ class Pupil():
 
     def register(self, json):
         # check all fields
-        if not check_all_parameters(json, ['id', 'name', 'surname', 'surname', 'school_id', 'password', 'email', 'class']):
-            return jsonify({"error": "Недостатньо данних"}), 400
+        if not check_all_parameters(json,
+                                    ['id', 'name', 'surname', 'surname', 'school_id', 'password', 'email', 'class']):
+            return json.dumps({"error": "Недостатньо данних"}), 400
 
         # check fields that can be NULL
 
@@ -38,7 +38,7 @@ class Pupil():
     def login(self, data):
         # check all fields
         if not check_all_parameters(data, ['login', 'password']):
-            return jsonify({ "error": "Недостатньо данних"}), 400
+            return json.dumps({"error": "Недостатньо данних"}), 400
         # hash password
         data['password'] = get_hash(data['password'])
         try:

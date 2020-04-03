@@ -1,6 +1,6 @@
 import os
 from flask import Flask, request
-from utils import Database, ParserConfig, get_hash, check_id, check_parameter
+from utils import Database, ParserConfig, get_hash, check_id
 from resourses import *
 import json
 
@@ -22,6 +22,7 @@ teacher = Teacher(app.database)
 admin = Admin(app.database)
 school = School(app.database)
 city = City(app.database)
+subject = Subject(app.database)
 
 
 # Треба передати: id (code)
@@ -31,16 +32,19 @@ def get_pass():
     return get_hash(request.get_json()['pass']), 200
 
 
-# @app.route('/getteachersubjects', methods=['GET'])
-# def get_teacher_subjects():
-#     data = request.get_json()
-#     if 'id' not in data:
-#         return json.dumps({"error": "Недостатньо даних"}), 400
-#     if data['id'] == "":
-#         return json.dumps({"error": "Некоректні дані"}), 400
-#     return school.get_info(data['id'])
+@app.route('/getteachersubjects', methods=['POST'])
+def get_teacher_subjects():
+    data = request.get_json()
+    if check_id(data):
+        return subject.get_teacher_subjects(data['id'])
+    return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
+
 
 @app.route('/addsubject', methods=['POST'])
+def add_subject():
+    data = request.get_json()
+    return subject.add(data)
+
 
 # Треба передати: id (code)
 # Повертає: name, city, region, street, house, phone, notes

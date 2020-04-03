@@ -1,4 +1,3 @@
-from flask import jsonify
 from utils import get_error, check_parameter, check_for_null, check_all_parameters
 import json
 import random
@@ -12,7 +11,7 @@ class School():
     def add(self, data):
         # check all fields
         if not check_all_parameters(json, ['cityid', 'name', 'street', 'house', 'phone']):
-            return jsonify({"error": "Недостатньо данних"}), 400
+            return json.dumps({"error": "Недостатньо данних"}), 400
 
         # check fields that can be NULL
 
@@ -24,7 +23,6 @@ class School():
         while code is None:
             arr = [str(random.randint(0, 9)) for _ in range(10)]
             code = "".join(arr)
-            print(code)
             res = self.db.execute("SELECT code FROM schools WHERE code='%s';" % code)
             if len(res) > 0:
                 code = None
@@ -44,11 +42,9 @@ class School():
     def get_info(self, id: str):
         try:
             sql = "SELECT * FROM schools INNER JOIN cities ON schools.city = cities.id WHERE code='%s';" % id
-            res = self.db.execute(sql)
+            res = self.db.execute(sql)[0]
             if len(res) < 1:
                 return json.dumps({"err": "Не знайдено вчителя в базі даних"}), 400
-            res = res[0]
-            print(res)
             return json.dumps({
                 "name": res[1],
                 "city": res[10],
