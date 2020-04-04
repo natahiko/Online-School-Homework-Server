@@ -9,19 +9,20 @@ class Database:
     def get_connection(self):
         return self.pool.get_connection()
 
-    def execute(self, sql):
+    def execute(self, sql, multi=False):
         try:
             con = self.get_connection()
             cursor = con.cursor()
-            cursor.execute(sql)
+            cursor.execute(sql, multi=multi)
             try:
                 res = cursor.fetchall()
                 con.commit()
                 return res
-            except:
+            except Exception as e1:
                 con.commit()
-                return None
+                return cursor.lastrowid
         except Exception as e:
+            print(e)
             raise e
         finally:
             con.close()

@@ -58,6 +58,7 @@ class Subject():
             res = self.db.execute(sql)
             result = []
             for i in res:
+                print(i)
                 result.append({
                     "id": i[0],
                     "title": i[1],
@@ -65,7 +66,7 @@ class Subject():
                     "deadline": i[3].strftime("%Y.%m.%d %H:%M"),
                     "active": i[5],
                     "notes": "" if i[6] is None else i[6],
-                    "remaining_time": i[7].strftime("%Y.%m.%d %H:%M")
+                    "remaining_time": "" if i[7] is None else i[7].strftime("%Y.%m.%d %H:%M")
                 })
             return json.dumps(result), 200
         except Exception as e:
@@ -95,8 +96,9 @@ class Subject():
             sql = "SELECT hyperlink FROM hometask_hyperlinks WHERE homework_id=%s" % id
             res2 = self.db.execute(sql)
             links = []
-            for i in res2:
-                links.append(i[0])
+            if res2 is not None:
+                for i in res2:
+                    links.append(i[0])
             result = {
                 "hw_title": res1[1],
                 "content": res1[2],
@@ -104,9 +106,57 @@ class Subject():
                 "subject_id": res1[4],
                 "active": res1[5],
                 "notes": "" if res1[6] is None else res1[6],
-                "remaining_time": res1[7].strftime("%Y.%m.%d %H:%M"),
+                "remaining_time": "" if res1[7] is None else res1[7].strftime("%Y.%m.%d %H:%M"),
                 "hyperlinks": links
             }
             return json.dumps(result), 200
+        except Exception as e:
+            return get_error(e)
+
+    def add_hometask(self, data):
+        if not check_all_parameters(data, ['title', 'id', 'content', 'deadline']):
+            return json.dumps({"error": "Недостатньо данних"}), 400
+        data['notes'] = check_for_null(data, 'notes')
+        try:
+            sql = "INSERT INTO hometasks (hw_title, content, deadline, notes, subject_id) VALUES ('%s','%s', '%s'," \
+                  " %s,'%s');" \
+                  % (data['title'], data['content'], datetime.strptime(data['deadline'], "%Y-%m-%dT%H:%M"),
+                     data['notes'], data['id'])
+            res = self.db.execute(sql)
+            for link in data['hyperlinks']:
+                sql = "INSERT INTO hometask_hyperlinks (hyperlink, homework_id) VALUES ('%s', '%s')" % (link, res)
+                self.db.execute(sql)
+            return json.dumps({"hw_id": res}), 200
+        except Exception as e:
+            return get_error(e)
+
+    def delete_sub(self, id):
+        try:
+            sql = "DELETE FROM subjects WHERE sub_id='%s';" % id
+            self.db.execute(sql)
+            return json.dumps({"data": True}), 200
+        except Exception as e:
+            return get_error(e)
+
+    def delete_hometask(self, id):
+        try:
+            sql = "DELETE FROM hometask_hyperlinks WHERE homework_id='%s'; DELETE FROM hometasks WHERE hw_id='%s';" % (
+            id, id)
+            self.db.execute(sql, multi=True)
+            return json.dumps({"data": True}), 200
+        except Exception as e:
+            return get_error(e)
+
+    def edit(self, data):
+        if not check_all_parameters(data, ['title', 'id', 'class_num']):
+            return json.dumps({"error": "Недостатньо данних"}), 400
+        data['notes'] = check_for_null(data, 'notes')
+        try:
+            sql = "UPDATE subjects SET title='%s', class_num='%s', notes=%s WHERE sub_id='%s';" % (data['title'],
+                                                                                                   data['class_num'],
+                                                                                                   data['notes'],
+                                                                                                   data['id'])
+            self.db.execute(sql)
+            return json.dumps({"data": True}), 200
         except Exception as e:
             return get_error(e)

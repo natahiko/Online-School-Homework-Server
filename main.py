@@ -32,6 +32,19 @@ def get_pass():
     return get_hash(request.get_json()['pass']), 200
 
 
+@app.route('/deletehometask', methods=['POST'])
+def delete_hometask():
+    data = request.get_json()
+    if check_id(data):
+        return subject.delete_hometask(data['id'])
+    return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
+
+
+@app.route('/addhometask', methods=['POST'])
+def add_hometask():
+    data = request.get_json()
+    return subject.add_hometask(data)
+
 @app.route('/gethometaskinfo', methods=['POST'])
 def get_hometask_info():
     data = request.get_json()
@@ -46,6 +59,7 @@ def get_subjects_hometasks():
     if check_id(data):
         return subject.get_subjects_hometasks(data['id'])
     return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
+
 
 @app.route('/getpupilsubjects', methods=['POST'])
 def get_pupil_subjects():
@@ -63,10 +77,24 @@ def get_teacher_subjects():
     return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
 
 
+@app.route('/editsubject', methods=['POST'])
+def edit_subject():
+    data = request.get_json()
+    return subject.edit(data)
+
+
 @app.route('/addsubject', methods=['POST'])
 def add_subject():
     data = request.get_json()
     return subject.add(data)
+
+
+@app.route('/deletesubject', methods=['POST'])
+def delete_subject():
+    data = request.get_json()
+    if check_id(data):
+        return subject.delete_sub(data['id'])
+    return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
 
 
 # Треба передати: id (code)
