@@ -22,7 +22,7 @@ class Subject():
         while code is None:
             arr = [str(random.randint(0, 9)) for _ in range(10)]
             code = "".join(arr)
-            res = self.db.execute("SELECT * FROM teachers WHERE teacher_id='%s';" % code)
+            res = self.db.execute("SELECT * FROM subjects WHERE sub_id='%s';" % code)
             if len(res) > 0:
                 code = None
 
@@ -58,7 +58,6 @@ class Subject():
             res = self.db.execute(sql)
             result = []
             for i in res:
-                print(i)
                 result.append({
                     "id": i[0],
                     "title": i[1],
@@ -76,7 +75,6 @@ class Subject():
         try:
             sql = "SELECT * FROM subjects WHERE sub_id IN (SELECT subject_id FROM studying WHERE student_id='%s') ORDER BY title" % pupil_id
             res = self.db.execute(sql)
-            print(res)
             result = []
             for i in res:
                 result.append({
@@ -130,6 +128,25 @@ class Subject():
         except Exception as e:
             return get_error(e)
 
+    def edit_hometask(self, data):
+        if not check_all_parameters(data, ['hw_title', 'id', 'content', 'deadline']):
+            return json.dumps({"error": "Недостатньо данних"}), 400
+        data['notes'] = check_for_null(data, 'notes')
+        try:
+            sql = "UPDATE hometasks SET hw_title='%s', content='%s', deadline='%s', notes=%s WHERE hw_id='%s';" \
+                  % (data['hw_title'], data['content'], datetime.strptime(data['deadline'], "%Y-%m-%dT%H:%M"),
+                     data['notes'], data['id'])
+            self.db.execute(sql)
+            sql = "DELETE FROM hometask_hyperlinks WHERE homework_id='%s';" % data['id']
+            self.db.execute(sql)
+            for link in data['hyperlinks']:
+                sql = "INSERT INTO hometask_hyperlinks (hyperlink, homework_id) VALUES ('%s', '%s'); " % (
+                link, data['id'])
+                self.db.execute(sql)
+            return json.dumps({"hw_id": data['id']}), 200
+        except Exception as e:
+            return get_error(e)
+
     def delete_sub(self, id):
         try:
             sql = "DELETE FROM subjects WHERE sub_id='%s';" % id
@@ -141,7 +158,7 @@ class Subject():
     def delete_hometask(self, id):
         try:
             sql = "DELETE FROM hometask_hyperlinks WHERE homework_id='%s'; DELETE FROM hometasks WHERE hw_id='%s';" % (
-            id, id)
+                id, id)
             self.db.execute(sql, multi=True)
             return json.dumps({"data": True}), 200
         except Exception as e:

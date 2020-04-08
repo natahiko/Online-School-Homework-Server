@@ -3,6 +3,7 @@ from flask import Flask, request
 from utils import Database, ParserConfig, get_hash, check_id
 from resourses import *
 import json
+from flask_cors import CORS
 
 path = os.path.dirname(os.path.abspath(__file__))
 
@@ -10,6 +11,7 @@ path = os.path.dirname(os.path.abspath(__file__))
 config = ParserConfig(os.path.join(path, 'config', 'conf.json'))
 # create application
 app = Flask(__name__)
+CORS(app)
 
 # init configuration and db
 with app.app_context():
@@ -23,6 +25,7 @@ admin = Admin(app.database)
 school = School(app.database)
 city = City(app.database)
 subject = Subject(app.database)
+olimpiad = Olimpiad(app.database)
 
 
 # Треба передати: id (code)
@@ -40,16 +43,56 @@ def delete_hometask():
     return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
 
 
+@app.route('/getCompetitionNames', methods=['GET'])
+def get_competition_names():
+    return olimpiad.get_competition_names()
+
+
+@app.route('/editolympiad', methods=['POST'])
+def edit_olimpiad():
+    data = request.get_json()
+    return olimpiad.edit_olimp(data)
+
+
+@app.route('/addolympiad', methods=['POST'])
+def add_olimpiad():
+    data = request.get_json()
+    return olimpiad.add_olimp(data)
+
+
+@app.route('/deleteolympiad', methods=['POST'])
+def delete_olimpiad():
+    data = request.get_json()
+    if check_id(data):
+        return olimpiad.delete_olimp(data['id'])
+    return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
+
+
 @app.route('/addhometask', methods=['POST'])
 def add_hometask():
     data = request.get_json()
     return subject.add_hometask(data)
+
+
+@app.route('/edithometask', methods=['POST'])
+def edit_hometask():
+    data = request.get_json()
+    return subject.edit_hometask(data)
+
 
 @app.route('/gethometaskinfo', methods=['POST'])
 def get_hometask_info():
     data = request.get_json()
     if check_id(data):
         return subject.get_hometask_info(data['id'])
+    return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
+
+
+@app.route("/getteacherolympiads", methods=['POST'])
+def get_teacher_olympiads():
+    data = request.get_json()
+    if check_id(data):
+        return olimpiad.get_teacher_olympiads(data['id'])
     return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
 
 
@@ -182,7 +225,6 @@ def teacher_registrations():
 
 @app.route('/registeradmin', methods=['POST'])
 def admin_registrations():
-    print(request.get_json())
     return admin.register(request.get_json())
 
 
