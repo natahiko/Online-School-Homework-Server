@@ -28,8 +28,23 @@ subject = Subject(app.database)
 olimpiad = Olimpiad(app.database)
 
 
-# Треба передати: id (code)
-# Повертає:
+
+@app.route('/getolympiadtasksandsources', methods=['POST'])
+def get_tasks_and_sources_teacher():
+    data = request.get_json()
+    if check_id(data):
+        return olimpiad.get_tasks_and_sources(data['id'])
+    return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
+
+
+@app.route('/getpupilolympiads', methods=["POST"])
+def get_pupil_olimpiads():
+    data = request.get_json()
+    if check_id(data):
+        return olimpiad.get_pupil_olimpiad(data['id'])
+    return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
+
+
 @app.route('/getpass', methods=['GET'])
 def get_pass():
     return get_hash(request.get_json()['pass']), 200
@@ -140,8 +155,6 @@ def delete_subject():
     return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
 
 
-# Треба передати: id (code)
-# Повертає: name, city, region, street, house, phone, notes
 @app.route('/getschoolinfo', methods=['POST'])
 def get_school_info():
     data = request.get_json()
@@ -150,8 +163,6 @@ def get_school_info():
     return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
 
 
-# Треба передати: id
-# Повертає: name, surname, patronymic, email, phone, education, phd, schoolid, notes, schoolname
 @app.route('/getteacherinfo', methods=['POST'])
 def get_teacher_info():
     data = request.get_json()
@@ -166,8 +177,6 @@ def edit_teacher_info():
     return teacher.edit_info(data)
 
 
-# Треба передати: id
-# Повертає: login, email, notes, name, surname
 @app.route('/getadmininfo', methods=['POST'])
 def get_admin_info():
     data = request.get_json()
@@ -182,8 +191,6 @@ def edit_admin_info():
     return admin.edit_info(data)
 
 
-# Треба передати: id
-# Повертає: name, surname, patronymic, email, phone, class, birthdate, schoolid, notes, schoolname
 @app.route('/getpupilinfo', methods=['POST'])
 def get_pupil_info():
     data = request.get_json()
