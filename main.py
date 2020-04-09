@@ -1,9 +1,11 @@
-import os
-from flask import Flask, request
-from utils import Database, ParserConfig, get_hash, check_id
-from resourses import *
 import json
+import os
+
+from flask import Flask, request
 from flask_cors import CORS
+
+from resourses import *
+from utils import Database, ParserConfig, get_hash, check_id
 
 path = os.path.dirname(os.path.abspath(__file__))
 
@@ -23,10 +25,21 @@ pupil = Pupil(app.database)
 teacher = Teacher(app.database)
 admin = Admin(app.database)
 school = School(app.database)
-city = City(app.database)
+city_compete = CityCompete(app.database)
 subject = Subject(app.database)
 olimpiad = Olimpiad(app.database)
 
+
+
+@app.route("/addcompetition", methods=['POST'])
+def add_competition():
+    data = request.get_json()
+    return city_compete.add_competition(data)
+
+
+@app.route("/getCompetitionNamesAndStages", methods=['GET'])
+def get_competition_names_and_stages():
+    return city_compete.get_competition_names_and_stages()
 
 
 @app.route('/getolympiadtasksandsources', methods=['POST'])
@@ -60,7 +73,7 @@ def delete_hometask():
 
 @app.route('/getCompetitionNames', methods=['GET'])
 def get_competition_names():
-    return olimpiad.get_competition_names()
+    return city_compete.get_competition_names()
 
 
 @app.route('/editolympiad', methods=['POST'])
@@ -207,12 +220,12 @@ def edit_pupil_info():
 
 @app.route('/getCities', methods=['GET'])
 def get_cities():
-    return city.get_cities()
+    return city_compete.get_cities()
 
 
 @app.route('/addCity', methods=['POST'])
 def add_city():
-    return city.add_city(request.get_json())
+    return city_compete.add_city(request.get_json())
 
 
 @app.route('/addSchool', methods=['POST'])

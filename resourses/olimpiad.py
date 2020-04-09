@@ -1,7 +1,8 @@
-from datetime import datetime, timedelta
-from utils import get_error, check_parameter, check_for_null, check_all_parameters
 import json
 import random
+from datetime import datetime
+
+from utils import get_error, check_parameter, check_for_null, check_all_parameters
 
 
 class Olimpiad():
@@ -73,20 +74,6 @@ class Olimpiad():
                                                                    data['class_num'], data['notes'])
             self.db.execute(sql)
             return json.dumps({"code": code}), 200
-        except Exception as e:
-            return get_error(e)
-
-    def get_competition_names(self):
-        try:
-            sql = "SELECT * FROM competition_names"
-            res = self.db.execute(sql)
-            result = []
-            for i in res:
-                result.append({
-                    "id": i[0],
-                    "name": i[1]
-                })
-            return json.dumps(result), 200
         except Exception as e:
             return get_error(e)
 
