@@ -126,13 +126,19 @@ class Olimpiad():
             res = self.db.execute(sql)
             tasks = []
             for i in res:
+                sql0 = "SELECT * FROM tasks_hyperlinks WHERE task_id='%s';" % id
+                res0 = self.db.execute(sql0)
+                links = []
+                for link in res0:
+                    links.append(link[1])
                 tasks.append({
                     "id": i[0],
                     "task_caption": i[1],
                     "deadline": i[4].strftime("%Y.%m.%d %H:%M"),
                     "content": i[2],
                     "notes": "" if i[3] is None else i[3],
-                    "active": datetime.now() <= i[4]
+                    "active": datetime.now() <= i[4],
+                    "hyperlinks": links
                 })
 
             sql = "SELECT * FROM additional_sources WHERE olimp_id='%s'" % id
@@ -156,5 +162,13 @@ class Olimpiad():
                 "tasks": tasks,
                 "sources": sources
             }), 200
+        except Exception as e:
+            return get_error(e)
+
+    def delete_task(self, id):
+        try:
+            sql = "DELETE FROM competition_tasks WHERE olimp_id='%s';" % id
+            self.db.execute(sql)
+            return json.dumps({"data": True}), 200
         except Exception as e:
             return get_error(e)

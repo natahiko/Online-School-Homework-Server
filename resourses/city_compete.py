@@ -8,9 +8,29 @@ class CityCompete():
     def __init__(self, database):
         self.db = database
 
+    def get_all_competition(self):
+        try:
+            sql = "SELECT * FROM competition INNER JOIN competition_names ON competition.name_id = " \
+                  "competition_names.name_id INNER JOIN stages ON competition.stage = stages.id WHERE con_id<>0 ORDER BY con_name"
+            res = self.db.execute(sql)
+            print(res)
+            result = []
+            for i in res:
+                result.append({
+                    "id": i[0],
+                    "name": i[7],
+                    "date": i[2].strftime("%Y.%m.%d %H:%M"),
+                    "place": i[3],
+                    "stage": i[10]
+                })
+            return json.dumps(result), 200
+        except Exception as e:
+            return get_error(e)
+
+
     def get_competition_names_and_stages(self):
         try:
-            sql = "SELECT * FROM competition_names"
+            sql = "SELECT * FROM competition_names WHERE  name_id<>0 ORDER BY con_name"
             res = self.db.execute(sql)
             names = []
             for i in res:
@@ -18,7 +38,7 @@ class CityCompete():
                     "id": i[0],
                     "name": i[1]
                 })
-            sql = "SELECT * FROM stages"
+            sql = "SELECT * FROM stages ORDER BY stage"
             res = self.db.execute(sql)
             stages = []
             for i in res:
@@ -35,7 +55,7 @@ class CityCompete():
 
     def get_competition_names(self):
         try:
-            sql = "SELECT * FROM competition_names"
+            sql = "SELECT * FROM competition_names WHERE name_id<>0 ORDER BY con_name"
             res = self.db.execute(sql)
             result = []
             for i in res:

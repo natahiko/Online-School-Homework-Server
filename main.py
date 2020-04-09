@@ -30,6 +30,17 @@ subject = Subject(app.database)
 olimpiad = Olimpiad(app.database)
 
 
+@app.route('/deleteolimpiatask', methods=['POST'])
+def delete_olimp_task():
+    data = request.get_json()
+    if check_id(data):
+        return olimpiad.delete_task(data['id'])
+    return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
+
+@app.route("/getallcompetitions", methods=['GET'])
+def get_all_competition():
+    return city_compete.get_all_competition()
+
 
 @app.route("/addcompetition", methods=['POST'])
 def add_competition():
@@ -40,6 +51,22 @@ def add_competition():
 @app.route("/getCompetitionNamesAndStages", methods=['GET'])
 def get_competition_names_and_stages():
     return city_compete.get_competition_names_and_stages()
+
+
+@app.route('/getpupilanswer', methods=['POST'])
+def get_pupil_answer():
+    data = request.get_json()
+    # pupil_id, task_id
+    #TODO
+    # // let
+    # answer = {
+    #          // "id": "3",
+    # // "text": "aoaoaoaoaooao oa oa oao oaooao o aoo oooaoaoaooao",
+    # // "hyperlink": "www.distedu.ukma.edu.ua",
+    # // "response": "looks good",
+    # // "mark": "11/12"
+    #            //};
+    return pupil.get_answer(data)
 
 
 @app.route('/getolympiadtasksandsources', methods=['POST'])
