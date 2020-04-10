@@ -84,3 +84,19 @@ class Pupil():
         except Exception as e:
             return get_error(e)
         return json.dumps({"data": True}), 200
+
+    def get_answer(self, data):
+        if not check_all_parameters(data, ['pupil_id', 'task_id']):
+            return json.dumps({"error": "Недостатньо данних"}), 400
+        sql = "SELECT * FROM answers WHERE student_id='%s' AND task_id='%s';" % (data['pupil_id'], data['task_id'])
+        res = self.db.execute(sql)
+# pupil_id, task_id
+# // TODO
+# // let
+# // answer = {
+#          // "id": "3",
+# // "text": "aoaoaoaoaooao oa oa oao oaooao o aoo oooaoaoaooao",
+# // "hyperlink": "www.distedu.ukma.edu.ua",
+# // "response": "looks good",
+# // "mark": "11/12"
+#            //};

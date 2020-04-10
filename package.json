@@ -1,0 +1,19 @@
+{
+  "name": "online-school-homework-server",
+  "version": "1.0.0",
+  "description": "*Client part:* https://github.com/solja484/Online-School-Homeworks",
+  "main": "main.py",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/natahiko/Online-School-Homework-Server.git"
+  },
+  "author": "natali shkarovska",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/natahiko/Online-School-Homework-Server/issues"
+  },
+  "homepage": "https://github.com/natahiko/Online-School-Homework-Server#readme"
+}

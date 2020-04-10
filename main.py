@@ -56,16 +56,6 @@ def get_competition_names_and_stages():
 @app.route('/getpupilanswer', methods=['POST'])
 def get_pupil_answer():
     data = request.get_json()
-    # pupil_id, task_id
-    #TODO
-    # // let
-    # answer = {
-    #          // "id": "3",
-    # // "text": "aoaoaoaoaooao oa oa oao oaooao o aoo oooaoaoaooao",
-    # // "hyperlink": "www.distedu.ukma.edu.ua",
-    # // "response": "looks good",
-    # // "mark": "11/12"
-    #            //};
     return pupil.get_answer(data)
 
 
