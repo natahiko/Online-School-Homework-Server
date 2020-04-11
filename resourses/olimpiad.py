@@ -192,7 +192,7 @@ class Olimpiad():
             return json.dumps({"error": "Недостатньо данних"}), 400
         data['notes'] = check_for_null(data, 'notes')
         try:
-            task_id  = data['id']
+            task_id = data['id']
             sql = "UPDATE competition_tasks SET task_caption='%s', content='%s', notes=%s, deadline='%s' WHERE " \
                   "task_id='%s';" % (data['task_caption'], data['content'], data['notes'], data['deadline'], task_id)
             self.db.execute(sql)
@@ -202,5 +202,28 @@ class Olimpiad():
                 sql0 = "INSERT INTO tasks_hyperlinks (link, task_id) VALUES ('%s', '%s');" % (i, task_id)
                 self.db.execute(sql0)
             return json.dumps({"id": task_id}), 200
+        except Exception as e:
+            return get_error(e)
+
+    def get_all_pupils(self, id):
+        try:
+            sql = "SELECT p.student_id, p.name, p.surname, p.patronymic, p.birth_date, p.class, p.email, p.notes," \
+                  " p.phone, school_id, schools.name FROM compete INNER JOIN pupils p on compete.student_id = p.student_id INNER JOIN schools" \
+                  " ON p.school_id = schools.code WHERE compete.olimp_id='%s';" % id
+            res = self.db.execute(sql)
+            result = []
+            for i in res:
+                result.append({
+                    "id": i[0],
+                    "name": i[1] + " " + i[2] + " " + ("" if i[3] is None else i[3]),
+                    "birth_date": i[4],
+                    "class": i[5],
+                    "email": i[6],
+                    "notes": i[7],
+                    "phone": i[8],
+                    "school_id": i[9],
+                    "schoolname": i[10]
+                })
+            return json.dumps(result), 200
         except Exception as e:
             return get_error(e)

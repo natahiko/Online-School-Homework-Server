@@ -37,6 +37,7 @@ def delete_olimp_task():
         return olimpiad.delete_task(data['id'])
     return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
 
+
 @app.route("/getallcompetitions", methods=['GET'])
 def get_all_competition():
     return city_compete.get_all_competition()
@@ -211,6 +212,22 @@ def delete_subject():
     data = request.get_json()
     if check_id(data):
         return subject.delete_sub(data['id'])
+    return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
+
+
+@app.route('/getallsubjectpupils', methods=['POST'])
+def get_all_subject_pupils():
+    data = request.get_json()
+    if check_id(data):
+        return subject.get_all_pupils(data['id'])
+    return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
+
+
+@app.route('/getallolimpiapupils', methods=['POST'])
+def get_all_olimpia_pupils():
+    data = request.get_json()
+    if check_id(data):
+        return olimpiad.get_all_pupils(data['id'])
     return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
 
 

@@ -141,7 +141,7 @@ class Subject():
             self.db.execute(sql)
             for link in data['hyperlinks']:
                 sql = "INSERT INTO hometask_hyperlinks (hyperlink, homework_id) VALUES ('%s', '%s'); " % (
-                link, data['id'])
+                    link, data['id'])
                 self.db.execute(sql)
             return json.dumps({"hw_id": data['id']}), 200
         except Exception as e:
@@ -175,5 +175,28 @@ class Subject():
                                                                                                    data['id'])
             self.db.execute(sql)
             return json.dumps({"data": True}), 200
+        except Exception as e:
+            return get_error(e)
+
+    def get_all_pupils(self, id):
+        try:
+            sql = "SELECT p.student_id, p.name, p.surname, p.patronymic, p.birth_date, p.class, p.email, p.notes," \
+                  " p.phone, school_id, schools.name FROM studying INNER JOIN pupils p on studying.student_id = p.student_id INNER JOIN schools" \
+                  " ON p.school_id = schools.code WHERE subject_id='%s';" % id
+            res = self.db.execute(sql)
+            result = []
+            for i in res:
+                result.append({
+                    "id": i[0],
+                    "name": i[1] + " " + i[2] + " " + ("" if i[3] is None else i[3]),
+                    "birth_date": i[4],
+                    "class": i[5],
+                    "email": i[6],
+                    "notes": i[7],
+                    "phone": i[8],
+                    "school_id": i[9],
+                    "schoolname": i[10]
+                })
+            return json.dumps(result), 200
         except Exception as e:
             return get_error(e)

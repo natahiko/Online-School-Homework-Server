@@ -101,7 +101,7 @@ class Teacher():
                     "hyperlink": i[2],
                     "response": "" if i[3] is None else i[3],
                     "mark": "" if i[4] is None else i[4],
-                    "name": i[5]+' '+i[6]+ ' ('+str(i[7])+')'
+                    "name": i[5] + ' ' + i[6] + ' (' + str(i[7]) + ')'
                 })
             return json.dumps(result), 200
         except Exception as e:
@@ -112,7 +112,8 @@ class Teacher():
         data['mark'] = check_for_null(data, 'mark')
 
         try:
-            sql = "UPDATE answers SET mark='%s', response='%s' WHERE answer_id='%s';" % (data['mark'], data['response'], data['id'])
+            sql = "UPDATE answers SET mark=%s, response=%s WHERE answer_id='%s';" % (
+            data['mark'], data['response'], data['id'])
             self.db.execute(sql)
             return json.dumps({"data": True}), 200
         except Exception as e:
