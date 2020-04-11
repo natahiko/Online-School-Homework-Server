@@ -194,6 +194,12 @@ def edit_subject():
     return subject.edit(data)
 
 
+@app.route('/changeanswerbyteacher', methods=['POST'])
+def change_answer_by_teacher():
+    data = request.get_json()
+    return teacher.change_answer(data)
+
+
 @app.route('/addsubject', methods=['POST'])
 def add_subject():
     data = request.get_json()
@@ -221,6 +227,14 @@ def get_teacher_info():
     data = request.get_json()
     if check_id(data):
         return teacher.get_info(data['id'])
+    return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
+
+
+@app.route('/getallanswersforteacher', methods=['POST'])
+def get_all_answers_for_teacher():
+    data = request.get_json()
+    if check_id(data):
+        return teacher.get_all_answers(data['id'])
     return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
 
 

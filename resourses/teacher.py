@@ -86,3 +86,34 @@ class Teacher():
         except Exception as e:
             return get_error(e)
         return json.dumps({"data": True}), 200
+
+    def get_all_answers(self, id):
+        try:
+            sql = "SELECT answer_id, text, hyperlink, response, mark, p.name, p.surname, p.class FROM answers " \
+                  "INNER JOIN pupils p ON answers.student_id = p.student_id WHERE task_id='%s';" % id
+            res = self.db.execute(sql)
+            print(res)
+            result = []
+            for i in res:
+                result.append({
+                    "id": i[0],
+                    "text": i[1],
+                    "hyperlink": i[2],
+                    "response": "" if i[3] is None else i[3],
+                    "mark": "" if i[4] is None else i[4],
+                    "name": i[5]+' '+i[6]+ ' ('+str(i[7])+')'
+                })
+            return json.dumps(result), 200
+        except Exception as e:
+            return get_error(e)
+
+    def change_answer(self, data):
+        data['response'] = check_for_null(data, 'response')
+        data['mark'] = check_for_null(data, 'mark')
+
+        try:
+            sql = "UPDATE answers SET mark='%s', response='%s' WHERE answer_id='%s';" % (data['mark'], data['response'], data['id'])
+            self.db.execute(sql)
+            return json.dumps({"data": True}), 200
+        except Exception as e:
+            return get_error(e)
