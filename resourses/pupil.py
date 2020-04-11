@@ -111,3 +111,18 @@ class Pupil():
             return json.dumps(result), 200
         except Exception as e:
             return get_error(e)
+
+    def submit_answer(self, data):
+        try:
+            if not check_all_parameters(data, ['pupil_id', 'text', 'id']):
+                return json.dumps({"error": "Недостатньо данних"}), 400
+
+            data['hyperlink'] = check_for_null(data, 'hyperlink')
+
+            sql = "INSERT INTO answers (text, student_id, task_id, hyperlink) VALUES ('%s', '%s', '%s', %s) " \
+                  "ON DUPLICATE KEY UPDATE text='%s', hyperlink=%s;" % (data['text'], data['pupil_id'], data['id'],
+                                                                      data['hyperlink'], data['text'], data['hyperlink'])
+            self.db.execute(sql)
+            return json.dumps({"data": True}), 200
+        except Exception as e:
+            return get_error(e)

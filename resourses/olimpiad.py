@@ -28,7 +28,7 @@ class Olimpiad():
                     "place": i[10],
                     "stage": i[11],
                     "name": i[14],
-                    "remain_time": str(datetime.now() - i[9])
+                    "remain_time": str(abs(datetime.now() - i[9]))
                 })
             return json.dumps(result), 200
         except Exception as e:
@@ -112,7 +112,7 @@ class Olimpiad():
                     "place": i[12],
                     "stage": i[13],
                     "name": i[16],
-                    "remain_time": str(datetime.now() - i[11])
+                    "remain_time": str(abs(datetime.now() - i[11]))
                 })
             return json.dumps(result), 200
         except Exception as e:
@@ -137,7 +137,7 @@ class Olimpiad():
                     "notes": "" if i[3] is None else i[3],
                     "active": datetime.now() <= i[4],
                     "hyperlinks": links,
-                    "remaining_time": str(datetime.now() - i[4])
+                    "remaining_time": str(abs(datetime.now() - i[4]))
                 })
             sql = "SELECT * FROM additional_sources WHERE olimp_id='%s'" % id
             res2 = self.db.execute(sql)
@@ -168,5 +168,39 @@ class Olimpiad():
             sql = "DELETE FROM competition_tasks WHERE olimp_id='%s';" % id
             self.db.execute(sql)
             return json.dumps({"data": True}), 200
+        except Exception as e:
+            return get_error(e)
+
+    def add_task(self, data):
+        if not check_all_parameters(data, ['source_id', 'deadline', 'content', 'task_caption']):
+            return json.dumps({"error": "Недостатньо данних"}), 400
+        data['notes'] = check_for_null(data, 'notes')
+        try:
+            sql = "INSERT INTO competition_tasks (task_caption, content, notes, deadline, olimp_id) VALUES " \
+                  "('%s','%s',%s,'%s','%s');" % (data['task_caption'], data['content'], data['notes'],
+                                                 data['deadline'], data['source_id'])
+            res = self.db.execute(sql)
+            for i in data['hyperlinks']:
+                sql0 = "INSERT INTO tasks_hyperlinks (link, task_id) VALUES ('%s', '%s');" % (i, res)
+                self.db.execute(sql0)
+            return json.dumps({"id": res}), 200
+        except Exception as e:
+            return get_error(e)
+
+    def edit_task(self, data):
+        if not check_all_parameters(data, ['id', 'deadline', 'content', 'task_caption']):
+            return json.dumps({"error": "Недостатньо данних"}), 400
+        data['notes'] = check_for_null(data, 'notes')
+        try:
+            task_id  = data['id']
+            sql = "UPDATE competition_tasks SET task_caption='%s', content='%s', notes=%s, deadline='%s' WHERE " \
+                  "task_id='%s';" % (data['task_caption'], data['content'], data['notes'], data['deadline'], task_id)
+            self.db.execute(sql)
+            sql = "DELETE FROM tasks_hyperlinks WHERE task_id='%s';" % task_id
+            self.db.execute(sql)
+            for i in data['hyperlinks']:
+                sql0 = "INSERT INTO tasks_hyperlinks (link, task_id) VALUES ('%s', '%s');" % (i, task_id)
+                self.db.execute(sql0)
+            return json.dumps({"id": task_id}), 200
         except Exception as e:
             return get_error(e)

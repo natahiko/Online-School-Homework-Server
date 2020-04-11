@@ -59,6 +59,24 @@ def get_pupil_answer():
     return pupil.get_answer(data)
 
 
+@app.route('/submitanswer', methods=['POST'])
+def submit_answer():
+    data = request.get_json()
+    return pupil.submit_answer(data)
+
+
+@app.route('/addtask', methods=['POST'])
+def add_task():
+    data = request.get_json()
+    return olimpiad.add_task(data)
+
+
+@app.route('/edittask', methods=['POST'])
+def edit_task():
+    data = request.get_json()
+    return olimpiad.edit_task(data)
+
+
 @app.route('/getolympiadtasksandsources', methods=['POST'])
 def get_tasks_and_sources_teacher():
     data = request.get_json()
