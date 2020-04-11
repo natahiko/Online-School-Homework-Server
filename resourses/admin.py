@@ -19,9 +19,9 @@ class Admin():
         # try to add to db
         try:
             sql = "INSERT INTO admins (login, email, password, notes, name, surname) " \
-                  "VALUES ('%s','%s', '%s', %s, '%s', '%s');" % (json['login'], json['email'],
-                                                                 json['password'], json['notes'],
-                                                                 json['name'], json['surname'])
+                  "VALUES ('{}','{}', '{}', {}, '{}', '{}');".format(json['login'], json['email'],
+                                                                     json['password'], json['notes'],
+                                                                     json['name'], json['surname'])
             self.db.execute(sql)
         except Exception as e:
             return get_error(e)

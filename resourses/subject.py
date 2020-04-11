@@ -65,7 +65,7 @@ class Subject():
                     "deadline": i[3].strftime("%Y.%m.%d %H:%M"),
                     "active": i[5],
                     "notes": "" if i[6] is None else i[6],
-                    "remaining_time": "" if i[7] is None else i[7].strftime("%Y.%m.%d %H:%M")
+                    "remaining_time": str(datetime.now() - i[3])
                 })
             return json.dumps(result), 200
         except Exception as e:
@@ -104,7 +104,7 @@ class Subject():
                 "subject_id": res1[4],
                 "active": res1[5],
                 "notes": "" if res1[6] is None else res1[6],
-                "remaining_time": "" if res1[7] is None else res1[7].strftime("%Y.%m.%d %H:%M"),
+                "remaining_time": str(datetime.now() - i[3]),
                 "hyperlinks": links
             }
             return json.dumps(result), 200

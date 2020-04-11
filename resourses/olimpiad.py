@@ -28,9 +28,8 @@ class Olimpiad():
                     "place": i[10],
                     "stage": i[11],
                     "name": i[14],
-                    "remain_time": '0'
+                    "remain_time": str(datetime.now() - i[9])
                 })
-                # TODO remaining time
             return json.dumps(result), 200
         except Exception as e:
             return get_error(e)
@@ -113,9 +112,8 @@ class Olimpiad():
                     "place": i[12],
                     "stage": i[13],
                     "name": i[16],
-                    "remain_time": '0'
+                    "remain_time": str(datetime.now() - i[11])
                 })
-                # TODO remaining time
             return json.dumps(result), 200
         except Exception as e:
             return get_error(e)
@@ -138,9 +136,9 @@ class Olimpiad():
                     "content": i[2],
                     "notes": "" if i[3] is None else i[3],
                     "active": datetime.now() <= i[4],
-                    "hyperlinks": links
+                    "hyperlinks": links,
+                    "remaining_time": str(datetime.now() - i[4])
                 })
-
             sql = "SELECT * FROM additional_sources WHERE olimp_id='%s'" % id
             res2 = self.db.execute(sql)
             sources = []
@@ -151,7 +149,7 @@ class Olimpiad():
                 links = []
                 for link in res0:
                     links.append(link[1])
-                tasks.append({
+                sources.append({
                     "id": id0,
                     "caption": i[1],
                     "content": i[2],
