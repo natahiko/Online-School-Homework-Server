@@ -53,6 +53,11 @@ def get_competition_names_and_stages():
     return city_compete.get_competition_names_and_stages()
 
 
+@app.route("/getallschools", methods=['GET'])
+def get_all_schools():
+    return school.get_all_schools()
+
+
 @app.route('/getpupilanswer', methods=['POST'])
 def get_pupil_answer():
     data = request.get_json()
@@ -253,19 +258,32 @@ def edit_pupil_info():
     return pupil.edit_info(data)
 
 
-@app.route('/getCities', methods=['GET'])
+@app.route('/getcities', methods=['GET'])
 def get_cities():
     return city_compete.get_cities()
 
 
-@app.route('/addCity', methods=['POST'])
+@app.route('/addcity', methods=['POST'])
 def add_city():
     return city_compete.add_city(request.get_json())
 
 
-@app.route('/addSchool', methods=['POST'])
+@app.route('/addschool', methods=['POST'])
 def school_add():
     return school.add(request.get_json())
+
+
+@app.route('/editschool', methods=['POST'])
+def school_edit():
+    return school.edit(request.get_json())
+
+
+@app.route('/deleteschool', methods=['POST'])
+def delete_school():
+    data = request.get_json()
+    if check_id(data):
+        return school.delete_school(data['id'])
+    return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
 
 
 @app.route('/registerpupil', methods=['POST'])
