@@ -91,6 +91,22 @@ def get_tasks_and_sources_teacher():
     return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
 
 
+@app.route('/getsubjectTeacherInfo', methods=['POST'])
+def get_sub_teacher_іnfo():
+    data = request.get_json()
+    if check_id(data):
+        return teacher.get_subject_teacher_іnfo(data['id'])
+    return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
+
+
+@app.route('/getolimpTeacherInfo', methods=['POST'])
+def get_olimp_teacher_іnfo():
+    data = request.get_json()
+    if check_id(data):
+        return teacher.get_olimp_teacher_іnfo(data['id'])
+    return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
+
+
 @app.route('/getpupilolympiads', methods=["POST"])
 def get_pupil_olimpiads():
     data = request.get_json()

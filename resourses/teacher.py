@@ -113,8 +113,54 @@ class Teacher():
 
         try:
             sql = "UPDATE answers SET mark=%s, response=%s WHERE answer_id='%s';" % (
-            data['mark'], data['response'], data['id'])
+                data['mark'], data['response'], data['id'])
             self.db.execute(sql)
             return json.dumps({"data": True}), 200
+        except Exception as e:
+            return get_error(e)
+
+    def get_olimp_teacher_іnfo(self, id):
+        try:
+            sql = "SELECT * FROM teachers INNER JOIN schools ON schools.code = teachers.school_id INNER JOIN olimpiads " \
+                  "ON teachers.teacher_id = olimpiads.teach_id WHERE olimp_id='%s';" % id
+            res = self.db.execute(sql)
+            if len(res) < 1:
+                return json.dumps({"error": "Не знайдено вчителя в базі даних"}), 400
+            res = res[0]
+            return json.dumps({
+                "name": res[1],
+                "surname": res[2],
+                "patronymic": "" if res[3] is None else res[3],
+                "email": res[4],
+                "phone": "" if res[5] is None else res[5],
+                "education": res[6],
+                "phd": res[7],
+                "schoolid": res[9],
+                "schoolname": res[12],
+                "notes": "" if res[8] is None else res[8]
+            }), 200
+        except Exception as e:
+            return get_error(e)
+
+    def get_subject_teacher_іnfo(self, id):
+        try:
+            sql = "SELECT * FROM teachers INNER JOIN schools ON schools.code = teachers.school_id INNER JOIN subjects s " \
+                  "on teachers.teacher_id = s.teacher_id WHERE sub_id='%s';" % id
+            res = self.db.execute(sql)
+            if len(res) < 1:
+                return json.dumps({"error": "Не знайдено вчителя в базі даних"}), 400
+            res = res[0]
+            return json.dumps({
+                "name": res[1],
+                "surname": res[2],
+                "patronymic": "" if res[3] is None else res[3],
+                "email": res[4],
+                "phone": "" if res[5] is None else res[5],
+                "education": res[6],
+                "phd": res[7],
+                "schoolid": res[9],
+                "schoolname": res[12],
+                "notes": "" if res[8] is None else res[8]
+            }), 200
         except Exception as e:
             return get_error(e)
