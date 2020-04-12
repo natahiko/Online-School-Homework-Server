@@ -121,7 +121,30 @@ class Pupil():
 
             sql = "INSERT INTO answers (text, student_id, task_id, hyperlink) VALUES ('%s', '%s', '%s', %s) " \
                   "ON DUPLICATE KEY UPDATE text='%s', hyperlink=%s;" % (data['text'], data['pupil_id'], data['id'],
-                                                                      data['hyperlink'], data['text'], data['hyperlink'])
+                                                                        data['hyperlink'], data['text'],
+                                                                        data['hyperlink'])
+            self.db.execute(sql)
+            return json.dumps({"data": True}), 200
+        except Exception as e:
+            return get_error(e)
+
+    def add_olimpiad(self, data):
+        if not check_all_parameters(data, ['student_id', 'olimpiad_id']):
+            return json.dumps({"error": "Недостатньо данних"}), 400
+        try:
+            sql = "INSERT INTO compete (olimp_id, student_id) VALUES ('%s', '%s');" % (
+            data['olimpiad_id'], data['student_id'])
+            self.db.execute(sql)
+            return json.dumps({"data": True}), 200
+        except Exception as e:
+            return get_error(e)
+
+    def add_subject(self, data):
+        if not check_all_parameters(data, ['student_id', 'sub_id']):
+            return json.dumps({"error": "Недостатньо данних"}), 400
+        try:
+            sql = "INSERT INTO studying (subject_id, student_id) VALUES ('%s', '%s');" % (
+            data['sub_id'], data['student_id'])
             self.db.execute(sql)
             return json.dumps({"data": True}), 200
         except Exception as e:
