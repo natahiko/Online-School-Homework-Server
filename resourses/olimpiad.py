@@ -98,7 +98,7 @@ class Olimpiad():
             sql = "SELECT * FROM compete INNER JOIN olimpiads ON compete.olimp_id = olimpiads.olimp_id " \
                   "INNER JOIN competition ON olimpiads.con_id = competition.con_id INNER JOIN competition_names " \
                   "ON competition_names.name_id=competition.name_id " \
-                  "WHERE student_id='%s'" % id
+                  "WHERE student_id='%s';" % id
             res = self.db.execute(sql)
             result = []
             for i in res:
@@ -153,7 +153,7 @@ class Olimpiad():
                     "id": id0,
                     "caption": i[1],
                     "content": i[2],
-                    "notes": "" if i[5] is None else i[5],
+                    "notes": "" if i[4] is None else i[4],
                     "links": links
                 })
             return json.dumps({
@@ -208,7 +208,9 @@ class Olimpiad():
     def get_all_pupils(self, id):
         try:
             sql = "SELECT p.student_id, p.name, p.surname, p.patronymic, p.birth_date, p.class, p.email, p.notes," \
-                  " p.phone, school_id, schools.name FROM compete INNER JOIN pupils p on compete.student_id = p.student_id INNER JOIN schools" \
+                  " p.phone, school_id, schools.name, YEAR(CURDATE()) - YEAR(birth_date) - If(Month(birth_date)<Month" \
+                  "(CURDate()),0,If(Month(birth_date)>Month(CURDate()),1,If(Day(birth_date)>Day(CURDate()),1,0))) AS age " \
+                  "FROM compete INNER JOIN pupils p on compete.student_id = p.student_id INNER JOIN schools" \
                   " ON p.school_id = schools.code WHERE compete.olimp_id='%s';" % id
             res = self.db.execute(sql)
             result = []
@@ -216,7 +218,8 @@ class Olimpiad():
                 result.append({
                     "id": i[0],
                     "name": i[1] + " " + i[2] + " " + ("" if i[3] is None else i[3]),
-                    "birth_date": i[4],
+                    "birth_date": i[4].strftime("%Y.%m.%d %H:%M"),
+                    "age": i[11],
                     "class": i[5],
                     "email": i[6],
                     "notes": i[7],

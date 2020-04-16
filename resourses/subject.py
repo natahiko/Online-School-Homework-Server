@@ -181,7 +181,9 @@ class Subject():
     def get_all_pupils(self, id):
         try:
             sql = "SELECT p.student_id, p.name, p.surname, p.patronymic, p.birth_date, p.class, p.email, p.notes," \
-                  " p.phone, school_id, schools.name FROM studying INNER JOIN pupils p on studying.student_id = p.student_id INNER JOIN schools" \
+                  " p.phone, school_id, schools.name, YEAR(CURDATE()) - YEAR(birth_date) - If(Month(birth_date)<Month" \
+                  "(CURDate()),0,If(Month(birth_date)>Month(CURDate()),1,If(Day(birth_date)>Day(CURDate()),1,0))) AS age  " \
+                  "FROM studying INNER JOIN pupils p on studying.student_id = p.student_id INNER JOIN schools" \
                   " ON p.school_id = schools.code WHERE subject_id='%s';" % id
             res = self.db.execute(sql)
             result = []
@@ -189,7 +191,8 @@ class Subject():
                 result.append({
                     "id": i[0],
                     "name": i[1] + " " + i[2] + " " + ("" if i[3] is None else i[3]),
-                    "birth_date": i[4],
+                    "birth_date": i[4].strftime("%Y.%m.%d %H:%M"),
+                    "age": i[11],
                     "class": i[5],
                     "email": i[6],
                     "notes": i[7],

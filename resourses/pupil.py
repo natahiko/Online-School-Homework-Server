@@ -53,7 +53,9 @@ class Pupil():
 
     def get_info(self, id):
         try:
-            sql = "SELECT * FROM pupils INNER JOIN schools ON schools.code = pupils.school_id WHERE student_id='%s';" % id
+            sql = "SELECT *, YEAR(CURDATE()) - YEAR(birth_date) - If(Month(birth_date)<Month(CURDate()),0,If(Month" \
+                  "(birth_date)>Month(CURDate()),1,If(Day(birth_date)>Day(CURDate()),1,0))) AS age " \
+                  " FROM pupils INNER JOIN schools ON schools.code = pupils.school_id WHERE student_id='%s';" % id
             res = self.db.execute(sql)
             if len(res) < 1:
                 return json.dumps({"error": "Не знайдено учня в базі даних"}), 400
@@ -65,7 +67,8 @@ class Pupil():
                 "email": res[5],
                 "phone": "" if res[6] is None else res[6],
                 "class": res[4],
-                "birthdate": "" if res[7] is None else res[7],
+                "birthdate": "" if res[7] is None else res[7].strftime("%Y.%m.%d %H:%M"),
+                "age": res[11],
                 "schoolid": res[9],
                 "schoolname": res[12],
                 "notes": "" if res[8] is None else res[8]
