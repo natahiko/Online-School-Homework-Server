@@ -209,9 +209,10 @@ class Olimpiad():
         try:
             sql = "SELECT p.student_id, p.name, p.surname, p.patronymic, p.birth_date, p.class, p.email, p.notes," \
                   " p.phone, school_id, schools.name, YEAR(CURDATE()) - YEAR(birth_date) - If(Month(birth_date)<Month" \
-                  "(CURDate()),0,If(Month(birth_date)>Month(CURDate()),1,If(Day(birth_date)>Day(CURDate()),1,0))) AS age " \
+                  "(CURDate()),0,If(Month(birth_date)>Month(CURDate()),1,If(Day(birth_date)>Day(CURDate()),1,0))) AS age, AVG(mark) " \
                   "FROM compete INNER JOIN pupils p on compete.student_id = p.student_id INNER JOIN schools" \
-                  " ON p.school_id = schools.code WHERE compete.olimp_id='%s';" % id
+                  " ON p.school_id = schools.code LEFT OUTER JOIN answers ON " \
+                  "p.student_id = answers.student_id WHERE compete.olimp_id='%s' GROUP BY student_id;" % id
             res = self.db.execute(sql)
             result = []
             for i in res:
@@ -225,7 +226,8 @@ class Olimpiad():
                     "notes": i[7],
                     "phone": i[8],
                     "school_id": i[9],
-                    "schoolname": i[10]
+                    "schoolname": i[10],
+                    "avg": "-" if i[12] is None else float(i[12])
                 })
             return json.dumps(result), 200
         except Exception as e:

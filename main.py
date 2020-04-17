@@ -127,6 +127,14 @@ def get_pupil_olimpiads():
     return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
 
 
+@app.route('/getavaragepupil', methods=["POST"])
+def get_avarage_pupil():
+    data = request.get_json()
+    if check_id(data):
+        return pupil.get_avarage_pupil(data['id'])
+    return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
+
+
 @app.route('/getpass', methods=['GET'])
 def get_pass():
     return get_hash(request.get_json()['pass']), 200

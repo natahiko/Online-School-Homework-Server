@@ -54,8 +54,9 @@ class Pupil():
     def get_info(self, id):
         try:
             sql = "SELECT *, YEAR(CURDATE()) - YEAR(birth_date) - If(Month(birth_date)<Month(CURDate()),0,If(Month" \
-                  "(birth_date)>Month(CURDate()),1,If(Day(birth_date)>Day(CURDate()),1,0))) AS age " \
-                  " FROM pupils INNER JOIN schools ON schools.code = pupils.school_id WHERE student_id='%s';" % id
+                  "(birth_date)>Month(CURDate()),1,If(Day(birth_date)>Day(CURDate()),1,0))) AS age, AVG(mark) " \
+                  " FROM pupils p INNER JOIN schools ON schools.code = p.school_id INNER JOIN answers ON " \
+                  "p.student_id = answers.student_id WHERE p.student_id='%s' GROUP BY answers.student_id;" % id
             res = self.db.execute(sql)
             if len(res) < 1:
                 return json.dumps({"error": "Не знайдено учня в базі даних"}), 400
@@ -71,7 +72,8 @@ class Pupil():
                 "age": res[11],
                 "schoolid": res[9],
                 "schoolname": res[12],
-                "notes": "" if res[8] is None else res[8]
+                "notes": "" if res[8] is None else res[8],
+                "avg": "-" if res[13] is None else float(res[13])
             }), 200
         except Exception as e:
             return get_error(e)
@@ -136,7 +138,7 @@ class Pupil():
             return json.dumps({"error": "Недостатньо данних"}), 400
         try:
             sql = "INSERT INTO compete (olimp_id, student_id) VALUES ('%s', '%s');" % (
-            data['olimpiad_id'], data['student_id'])
+                data['olimpiad_id'], data['student_id'])
             self.db.execute(sql)
             return json.dumps({"data": True}), 200
         except Exception as e:
@@ -147,8 +149,17 @@ class Pupil():
             return json.dumps({"error": "Недостатньо данних"}), 400
         try:
             sql = "INSERT INTO studying (subject_id, student_id) VALUES ('%s', '%s');" % (
-            data['sub_id'], data['student_id'])
+                data['sub_id'], data['student_id'])
             self.db.execute(sql)
             return json.dumps({"data": True}), 200
+        except Exception as e:
+            return get_error(e)
+
+    def get_avarage_pupil(self, id):
+        try:
+            sql = "SELECT AVG(mark) FROM answers WHERE student_id='%s' GROUP BY student_id" % id
+            res = self.db.execute(sql)
+            print(res)
+            return json.dumps({"data": float(res[0][0])}), 200
         except Exception as e:
             return get_error(e)

@@ -17,7 +17,7 @@ class School():
         try:
             sql = "UPDATE schools SET name='%s',  region=%s, street='%s', house_number='%s', phone='%s', " \
                   "notes=%s WHERE code='%s';" % (data['name'], data['region'], data['street'], data['house'],
-                                                  data['phone'], data['notes'], data['code'])
+                                                 data['phone'], data['notes'], data['code'])
             self.db.execute(sql)
             return json.dumps({"data": True}), 200
         except Exception as e:
@@ -56,18 +56,22 @@ class School():
 
     def get_info(self, id: str):
         try:
-            sql = "SELECT * FROM schools INNER JOIN cities ON schools.city = cities.id WHERE code='%s';" % id
+            sql = "SELECT schools.name, region, street, house_number, schools.phone, schools.notes, cities.city, " \
+                  "COUNT(pupils.student_id) FROM schools INNER JOIN cities ON schools.city = cities.id " \
+                  "INNER JOIN pupils ON schools.code = pupils.school_id WHERE code='%s' GROUP BY pupils.school_id ;" % id
             res = self.db.execute(sql)[0]
+            print(res)
             if len(res) < 1:
-                return json.dumps({"err": "Не знайдено вчителя в базі даних"}), 400
+                return json.dumps({"err": "Не знайдено школу в базі даних"}), 400
             return json.dumps({
-                "name": res[1],
-                "city": res[10],
-                "region": "" if res[3] is None else res[3],
-                "street": res[4],
-                "house": res[5],
-                "phone": res[6],
-                "notes": "" if res[8] is None else res[8]
+                "name": res[0],
+                "city": res[6],
+                "region": "" if res[1] is None else res[1],
+                "street": res[2],
+                "house": res[3],
+                "phone": res[4],
+                "notes": "" if res[5] is None else res[5],
+                "school_pupils_num": res[7]
             }), 200
         except Exception as e:
             return get_error(e)
