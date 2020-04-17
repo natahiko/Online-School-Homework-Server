@@ -120,12 +120,14 @@ class Olimpiad():
 
     def get_tasks_and_sources(self, id):
         try:
+            print(id)
             sql = "SELECT * FROM competition_tasks WHERE olimp_id='%s'" % id
             res = self.db.execute(sql)
             tasks = []
             for i in res:
-                sql0 = "SELECT * FROM tasks_hyperlinks WHERE task_id='%s';" % id
+                sql0 = "SELECT * FROM tasks_hyperlinks WHERE task_id='%s';" % i[0]
                 res0 = self.db.execute(sql0)
+                print(res0)
                 links = []
                 for link in res0:
                     links.append(link[1])
@@ -165,7 +167,7 @@ class Olimpiad():
 
     def delete_task(self, id):
         try:
-            sql = "DELETE FROM competition_tasks WHERE olimp_id='%s';" % id
+            sql = "DELETE FROM competition_tasks WHERE task_id='%s';" % id
             self.db.execute(sql)
             return json.dumps({"data": True}), 200
         except Exception as e:

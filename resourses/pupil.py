@@ -58,9 +58,11 @@ class Pupil():
                   " FROM pupils p INNER JOIN schools ON schools.code = p.school_id INNER JOIN answers ON " \
                   "p.student_id = answers.student_id WHERE p.student_id='%s' GROUP BY answers.student_id;" % id
             res = self.db.execute(sql)
+            print(res)
             if len(res) < 1:
                 return json.dumps({"error": "Не знайдено учня в базі даних"}), 400
             res = res[0]
+            print(len(res))
             return json.dumps({
                 "name": res[1],
                 "surname": res[2],
@@ -69,11 +71,11 @@ class Pupil():
                 "phone": "" if res[6] is None else res[6],
                 "class": res[4],
                 "birthdate": "" if res[7] is None else res[7].strftime("%Y.%m.%d %H:%M"),
-                "age": res[11],
+                "age": res[27],
                 "schoolid": res[9],
                 "schoolname": res[12],
                 "notes": "" if res[8] is None else res[8],
-                "avg": "-" if res[13] is None else float(res[13])
+                "avg": "-" if res[28] is None else float(res[28])
             }), 200
         except Exception as e:
             return get_error(e)

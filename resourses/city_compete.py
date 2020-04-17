@@ -68,9 +68,10 @@ class CityCompete():
             return get_error(e)
 
     def add_competition(self, data):
-        if not check_all_parameters(data, ['stage_id', 'name_id', 'date', 'place']):
+        if not check_all_parameters(data, ['stage_id', 'name_id', 'date']):
             return json.dumps({"error": "Недостатньо данних"}), 400
         data['notes'] = check_for_null(data, 'notes')
+        data['place'] = check_for_null(data, 'place')
         try:
             sql = "INSERT INTO competition (name_id, ev_date, place, stage, notes) VALUE ('%s','%s','%s','%s',%s)" % \
                   (data['name_id'], data['date'], data['place'], data['stage_id'], data['notes'])

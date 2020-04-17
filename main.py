@@ -185,6 +185,12 @@ def edit_hometask():
     return subject.edit_hometask(data)
 
 
+@app.route('/getpupilslearnallteachsubjects', methods=['POST'])
+def get_pupils_learn_all_teach_subjects():
+    data = request.get_json()
+    return subject.get_all_pupils_learn(data)
+
+
 @app.route('/gethometaskinfo', methods=['POST'])
 def get_hometask_info():
     data = request.get_json()

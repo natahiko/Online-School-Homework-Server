@@ -85,8 +85,11 @@ class School():
                 result.append({
                     "code": i[0],
                     "name": i[1],
-                    "address": i[10] + ", " + ("" if i[3] is None else (i[3] + ", ")) + i[4] + " " + i[5],
-                    "phone": i[6]
+                    "address": i[9] + ", " + ("" if (i[3] is None or i[3] == "") else (i[3] + ", ")) + i[4] + " " + i[5],
+                    "phone": i[6],
+                    "region": "" if i[3] is None else i[3],
+                    "street": i[4],
+                    "house": i[5]
                 })
             return json.dumps(result), 200
         except Exception as e:

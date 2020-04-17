@@ -61,10 +61,10 @@ class Subject():
                 result.append({
                     "id": i[0],
                     "title": i[1],
-                    "content": "" if i[6] is None else i[6],
+                    "content": "" if i[2] is None else i[2],
                     "deadline": i[3].strftime("%Y.%m.%d %H:%M"),
-                    "active": i[5],
-                    "notes": "" if i[6] is None else i[6],
+                    "active": datetime.now() > i[3],
+                    "notes": "" if i[5] is None else i[5],
                     "remaining_time": str(abs(datetime.now() - i[3]))
                 })
             return json.dumps(result), 200
@@ -102,8 +102,8 @@ class Subject():
                 "content": res1[2],
                 "deadline": res1[3].strftime("%Y.%m.%d %H:%M"),
                 "subject_id": res1[4],
-                "active": res1[5],
-                "notes": "" if res1[6] is None else res1[6],
+                "active": datetime.now()>res1[3],
+                "notes": "" if res1[5] is None else res1[5],
                 "remaining_time": str(abs(datetime.now() - res1[3])),
                 "hyperlinks": links
             }
@@ -202,6 +202,21 @@ class Subject():
                     "schoolname": i[10],
                     "avg": "-" if i[12] is None else float(i[12])
                 })
+            return json.dumps(result), 200
+        except Exception as e:
+            return get_error(e)
+
+    def get_all_pupils_learn(self, data):
+        surname = check_for_null(data, 'surname')
+        id = check_for_null(data, 'id')
+        if surname=='NULL' and id=='NULL':
+            return json.dumps({"error": "Недостатньо данних"}), 400
+        try:
+            sql = ""
+            res = self.db.execute(sql)
+            result = []
+            for pupil in res:
+                result.append()
             return json.dumps(result), 200
         except Exception as e:
             return get_error(e)
