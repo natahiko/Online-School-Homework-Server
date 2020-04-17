@@ -11,7 +11,8 @@ class CityCompete():
     def get_all_competition(self):
         try:
             sql = "SELECT * FROM competition INNER JOIN competition_names ON competition.name_id = " \
-                  "competition_names.name_id INNER JOIN stages ON competition.stage = stages.id WHERE con_id<>0 ORDER BY con_name"
+                  "competition_names.name_id INNER JOIN stages ON competition.stage = stages.id " \
+                  "WHERE con_id<>0 ORDER BY con_name;"
             res = self.db.execute(sql)
             print(res)
             result = []
@@ -27,10 +28,9 @@ class CityCompete():
         except Exception as e:
             return get_error(e)
 
-
     def get_competition_names_and_stages(self):
         try:
-            sql = "SELECT * FROM competition_names WHERE  name_id<>0 ORDER BY con_name"
+            sql = "SELECT * FROM competition_names WHERE  name_id<>0 ORDER BY con_name;"
             res = self.db.execute(sql)
             names = []
             for i in res:
@@ -38,7 +38,7 @@ class CityCompete():
                     "id": i[0],
                     "name": i[1]
                 })
-            sql = "SELECT * FROM stages ORDER BY stage"
+            sql = "SELECT * FROM stages ORDER BY stage;"
             res = self.db.execute(sql)
             stages = []
             for i in res:
@@ -55,7 +55,7 @@ class CityCompete():
 
     def get_competition_names(self):
         try:
-            sql = "SELECT * FROM competition_names WHERE name_id<>0 ORDER BY con_name"
+            sql = "SELECT * FROM competition_names WHERE name_id<>0 ORDER BY con_name;"
             res = self.db.execute(sql)
             result = []
             for i in res:
@@ -73,7 +73,7 @@ class CityCompete():
         data['notes'] = check_for_null(data, 'notes')
         data['place'] = check_for_null(data, 'place')
         try:
-            sql = "INSERT INTO competition (name_id, ev_date, place, stage, notes) VALUE ('%s','%s','%s','%s',%s)" % \
+            sql = "INSERT INTO competition (name_id, ev_date, place, stage, notes) VALUE ('%s','%s','%s','%s',%s);" % \
                   (data['name_id'], data['date'], data['place'], data['stage_id'], data['notes'])
             self.db.execute(sql)
             return json.dumps({"data": True}), 200

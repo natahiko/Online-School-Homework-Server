@@ -78,14 +78,15 @@ class School():
 
     def get_all_schools(self):
         try:
-            sql = "SELECT * FROM schools INNER JOIN cities ON schools.city = cities.id"
+            sql = "SELECT * FROM schools INNER JOIN cities ON schools.city = cities.id ORDER BY name;"
             res = self.db.execute(sql)
             result = []
             for i in res:
                 result.append({
                     "code": i[0],
                     "name": i[1],
-                    "address": i[9] + ", " + ("" if (i[3] is None or i[3] == "") else (i[3] + ", ")) + i[4] + " " + i[5],
+                    "address": i[9] + ", " + ("" if (i[3] is None or i[3] == "") else (i[3] + ", ")) + i[4] + " " + i[
+                        5],
                     "phone": i[6],
                     "region": "" if i[3] is None else i[3],
                     "street": i[4],

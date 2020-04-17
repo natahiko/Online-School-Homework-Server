@@ -13,7 +13,8 @@ class Olimpiad():
     def get_teacher_olympiads(self, id):
         try:
             sql = "SELECT * FROM olimpiads INNER JOIN competition ON olimpiads.con_id = competition.con_id " \
-                  "INNER JOIN competition_names ON competition.name_id = competition_names.name_id WHERE teach_id='%s' ORDER BY title" % id
+                  "INNER JOIN competition_names ON competition.name_id = competition_names.name_id " \
+                  "WHERE teach_id='%s' ORDER BY title;" % id
             res = self.db.execute(sql)
             result = []
             for i in res:
@@ -98,7 +99,7 @@ class Olimpiad():
             sql = "SELECT * FROM compete INNER JOIN olimpiads ON compete.olimp_id = olimpiads.olimp_id " \
                   "INNER JOIN competition ON olimpiads.con_id = competition.con_id INNER JOIN competition_names " \
                   "ON competition_names.name_id=competition.name_id " \
-                  "WHERE student_id='%s';" % id
+                  "WHERE student_id='%s' ORDER BY title;" % id
             res = self.db.execute(sql)
             result = []
             for i in res:
@@ -121,7 +122,7 @@ class Olimpiad():
     def get_tasks_and_sources(self, id):
         try:
             print(id)
-            sql = "SELECT * FROM competition_tasks WHERE olimp_id='%s'" % id
+            sql = "SELECT * FROM competition_tasks WHERE olimp_id='%s' ORDER BY deadline;" % id
             res = self.db.execute(sql)
             tasks = []
             for i in res:
@@ -141,7 +142,7 @@ class Olimpiad():
                     "hyperlinks": links,
                     "remaining_time": str(abs(datetime.now() - i[4]))
                 })
-            sql = "SELECT * FROM additional_sources WHERE olimp_id='%s'" % id
+            sql = "SELECT * FROM additional_sources WHERE olimp_id='%s' ORDER BY caption;" % id
             res2 = self.db.execute(sql)
             sources = []
             for i in res2:
@@ -214,7 +215,7 @@ class Olimpiad():
                   "(CURDate()),0,If(Month(birth_date)>Month(CURDate()),1,If(Day(birth_date)>Day(CURDate()),1,0))) AS age, AVG(mark) " \
                   "FROM compete INNER JOIN pupils p on compete.student_id = p.student_id INNER JOIN schools" \
                   " ON p.school_id = schools.code LEFT OUTER JOIN answers ON " \
-                  "p.student_id = answers.student_id WHERE compete.olimp_id='%s' GROUP BY student_id;" % id
+                  "p.student_id = answers.student_id WHERE compete.olimp_id='%s' ORDER BY surname GROUP BY student_id;" % id
             res = self.db.execute(sql)
             result = []
             for i in res:

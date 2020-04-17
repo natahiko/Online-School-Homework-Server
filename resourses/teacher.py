@@ -77,11 +77,11 @@ class Teacher():
             return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
         try:
             sql = "UPDATE teachers SET name='%s', surname='%s', patronymic='%s', email='%s', phone='%s'," \
-                  " education='%s', phd='%s', notes='%s' WHERE teacher_id=%s;" % (data['name'], data['surname'],
-                                                                                  data['patronymic'], data['email'],
-                                                                                  data['phone'], data['education'],
-                                                                                  data['phd'], data['notes'],
-                                                                                  data['id'])
+                  " education='%s', phd='%s', notes='%s' WHERE teacher_id='%s';" % (data['name'], data['surname'],
+                                                                                    data['patronymic'], data['email'],
+                                                                                    data['phone'], data['education'],
+                                                                                    data['phd'], data['notes'],
+                                                                                    data['id'])
             res = self.db.execute(sql)
         except Exception as e:
             return get_error(e)
@@ -90,7 +90,7 @@ class Teacher():
     def get_all_answers(self, id):
         try:
             sql = "SELECT answer_id, text, hyperlink, response, mark, p.name, p.surname, p.class FROM answers " \
-                  "INNER JOIN pupils p ON answers.student_id = p.student_id WHERE task_id='%s';" % id
+                  "INNER JOIN pupils p ON answers.student_id = p.student_id WHERE task_id='%s' ORDER BY surname;" % id
             res = self.db.execute(sql)
             print(res)
             result = []
@@ -122,7 +122,7 @@ class Teacher():
     def get_olimp_teacher_іnfo(self, id):
         try:
             sql = "SELECT * FROM teachers INNER JOIN schools ON schools.code = teachers.school_id INNER JOIN olimpiads " \
-                  "ON teachers.teacher_id = olimpiads.teach_id WHERE olimp_id='%s';" % id
+                  "ON teachers.teacher_id = olimpiads.teach_id WHERE olimp_id='%s' ORDER BY title;" % id
             res = self.db.execute(sql)
             if len(res) < 1:
                 return json.dumps({"error": "Не знайдено вчителя в базі даних"}), 400
@@ -145,7 +145,7 @@ class Teacher():
     def get_subject_teacher_іnfo(self, id):
         try:
             sql = "SELECT * FROM teachers INNER JOIN schools ON schools.code = teachers.school_id INNER JOIN subjects s " \
-                  "on teachers.teacher_id = s.teacher_id WHERE sub_id='%s';" % id
+                  "on teachers.teacher_id = s.teacher_id WHERE sub_id='%s' ORDER BY title;" % id
             res = self.db.execute(sql)
             if len(res) < 1:
                 return json.dumps({"error": "Не знайдено вчителя в базі даних"}), 400

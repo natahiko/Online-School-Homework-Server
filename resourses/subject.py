@@ -38,7 +38,7 @@ class Subject():
 
     def get_teacher_subjects(self, teacher_id):
         try:
-            sql = "SELECT * FROM subjects WHERE teacher_id='%s' ORDER BY title" % teacher_id
+            sql = "SELECT * FROM subjects WHERE teacher_id='%s' ORDER BY title;" % teacher_id
             res = self.db.execute(sql)
             result = []
             for i in res:
@@ -54,7 +54,7 @@ class Subject():
 
     def get_subjects_hometasks(self, id):
         try:
-            sql = "SELECT * FROM hometasks WHERE subject_id='%s' ORDER BY hw_title" % id
+            sql = "SELECT * FROM hometasks WHERE subject_id='%s' ORDER BY deadline;" % id
             res = self.db.execute(sql)
             result = []
             for i in res:
@@ -73,7 +73,8 @@ class Subject():
 
     def get_pupil_subjects(self, pupil_id):
         try:
-            sql = "SELECT * FROM subjects WHERE sub_id IN (SELECT subject_id FROM studying WHERE student_id='%s') ORDER BY title" % pupil_id
+            sql = "SELECT * FROM subjects WHERE sub_id IN (SELECT subject_id FROM studying WHERE student_id='%s') " \
+                  "ORDER BY title;" % pupil_id
             res = self.db.execute(sql)
             result = []
             for i in res:
@@ -89,9 +90,9 @@ class Subject():
 
     def get_hometask_info(self, id):
         try:
-            sql = "SELECT * FROM hometasks WHERE hw_id=%s" % id
+            sql = "SELECT * FROM hometasks WHERE hw_id=%s;" % id
             res1 = self.db.execute(sql)[0]
-            sql = "SELECT hyperlink FROM hometask_hyperlinks WHERE homework_id=%s" % id
+            sql = "SELECT hyperlink FROM hometask_hyperlinks WHERE homework_id=%s;" % id
             res2 = self.db.execute(sql)
             links = []
             if res2 is not None:
@@ -102,7 +103,7 @@ class Subject():
                 "content": res1[2],
                 "deadline": res1[3].strftime("%Y.%m.%d %H:%M"),
                 "subject_id": res1[4],
-                "active": datetime.now()>res1[3],
+                "active": datetime.now() > res1[3],
                 "notes": "" if res1[5] is None else res1[5],
                 "remaining_time": str(abs(datetime.now() - res1[3])),
                 "hyperlinks": links
@@ -185,7 +186,7 @@ class Subject():
                   "(CURDate()),0,If(Month(birth_date)>Month(CURDate()),1,If(Day(birth_date)>Day(CURDate()),1,0))) AS age, AVG(mark)  " \
                   "FROM studying INNER JOIN pupils p on studying.student_id = p.student_id INNER JOIN schools" \
                   " ON p.school_id = schools.code LEFT OUTER JOIN answers ON " \
-                  "p.student_id = answers.student_id WHERE subject_id='%s' GROUP BY student_id;" % id
+                  "p.student_id = answers.student_id WHERE subject_id='%s' ORDER BY surname GROUP BY student_id;" % id
             res = self.db.execute(sql)
             result = []
             for i in res:
@@ -209,7 +210,7 @@ class Subject():
     def get_all_pupils_learn(self, data):
         surname = check_for_null(data, 'surname')
         id = check_for_null(data, 'id')
-        if surname=='NULL' and id=='NULL':
+        if surname == 'NULL' and id == 'NULL':
             return json.dumps({"error": "Недостатньо данних"}), 400
         try:
             sql = ""

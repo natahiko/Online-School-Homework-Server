@@ -160,7 +160,7 @@ def edit_olimpiad():
 
 
 @app.route('/addadditionalsource', methods=['POST'])
-def add_additional_source ():
+def add_additional_source():
     data = request.get_json()
     return olimpiad.add_additional_source(data)
 
