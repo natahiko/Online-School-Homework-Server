@@ -98,10 +98,12 @@ class Subject():
             if res2 is not None:
                 for i in res2:
                     links.append(i[0])
+            date = str(res1[3])[:-3].replace(" ", 'T')
             result = {
                 "hw_title": res1[1],
                 "content": res1[2],
                 "deadline": res1[3].strftime("%Y.%m.%d %H:%M"),
+                "deadline_iso": date,
                 "subject_id": res1[4],
                 "active": datetime.now() > res1[3],
                 "notes": "" if res1[5] is None else res1[5],

@@ -121,7 +121,6 @@ class Olimpiad():
 
     def get_tasks_and_sources(self, id):
         try:
-            print(id)
             sql = "SELECT * FROM competition_tasks WHERE olimp_id='%s' ORDER BY deadline;" % id
             res = self.db.execute(sql)
             tasks = []
@@ -132,10 +131,12 @@ class Olimpiad():
                 links = []
                 for link in res0:
                     links.append(link[1])
+                date = str(i[4])[:-3].replace(" ", 'T')
                 tasks.append({
                     "id": i[0],
                     "task_caption": i[1],
                     "deadline": i[4].strftime("%Y.%m.%d %H:%M"),
+                    "deadline_iso": date,
                     "content": i[2],
                     "notes": "" if i[3] is None else i[3],
                     "active": datetime.now() <= i[4],
