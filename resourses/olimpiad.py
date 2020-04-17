@@ -234,3 +234,18 @@ class Olimpiad():
             return json.dumps(result), 200
         except Exception as e:
             return get_error(e)
+
+    def add_additional_source(self, data):
+        if not check_all_parameters(data, ['source_id', 'caption', 'content']):
+            return json.dumps({"error": "Недостатньо данних"}), 400
+        data['notes'] = check_for_null(data, 'notes')
+        try:
+            sql = "INSERT INTO additional_sources (caption, content, olimp_id, notes) VALUES ('%s','%s','%s',%s);" % \
+                  (data['caption'], data['content'], data['source_id'], data['notes'])
+            id = self.db.execute(sql)
+            for i in data['hyperlinks']:
+                sql0 = "INSERT INTO additional_hyperlinks (hyperlink, source_id) VALUES ('%s', '%s');" % (i, id)
+                self.db.execute(sql0)
+            return json.dumps({"data": True}), 200
+        except Exception as e:
+            return get_error(e)

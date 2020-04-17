@@ -157,9 +157,9 @@ class Subject():
 
     def delete_hometask(self, id):
         try:
-            sql = "DELETE FROM hometask_hyperlinks WHERE homework_id='%s'; DELETE FROM hometasks WHERE hw_id='%s';" % (
-                id, id)
-            self.db.execute(sql, multi=True)
+            sql = "DELETE FROM hometasks WHERE hw_id='%s';" % (
+                id)
+            self.db.execute(sql)
             return json.dumps({"data": True}), 200
         except Exception as e:
             return get_error(e)
