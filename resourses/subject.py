@@ -211,15 +211,24 @@ class Subject():
 
     def get_all_pupils_learn(self, data):
         surname = check_for_null(data, 'surname')
-        id = check_for_null(data, 'id')
-        if surname == 'NULL' and id == 'NULL':
+        if surname == 'NULL':
             return json.dumps({"error": "Недостатньо данних"}), 400
         try:
-            sql = ""
+            print(surname)
+            sql = "SELECT * FROM pupils WHERE NOT EXISTS (SELECT * FROM studying AS A WHERE subject_id IN (SELECT " \
+                  "sub_id FROM subjects WHERE teacher_id IN (SELECT teacher_id FROM teachers WHERE surname=%s)) AND " \
+                  "NOT EXISTS (SELECT * FROM studying WHERE studying.student_id=pupils.student_id AND " \
+                  "A.subject_id=studying.subject_id));" % surname
             res = self.db.execute(sql)
             result = []
             for pupil in res:
-                result.append()
+                result.append({
+                    "id": pupil[0],
+                    "name": pupil[1] + " " + pupil[2],
+                    "email": pupil[3],
+                    "class": pupil[4],
+                    "school_id": pupil[5]
+                })
             return json.dumps(result), 200
         except Exception as e:
             return get_error(e)
