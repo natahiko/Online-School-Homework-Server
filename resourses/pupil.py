@@ -173,3 +173,19 @@ class Pupil():
             return json.dumps({"data": True}), 200
         except Exception as e:
             return get_error(e)
+
+    def delete_sub(self, data):
+        try:
+            sql = "DELETE FROM studying WHERE student_id='%s' AND subject_id='%s';" % (data['student_id'], data['sub_id'])
+            self.db.execute(sql)
+            return json.dumps({"data": True}), 200
+        except Exception as e:
+            return get_error(e)
+
+    def delete_olimp(self, data):
+        try:
+            sql = "DELETE FROM compete WHERE student_id='%s' AND olimp_id='%s';" % (data['student_id'], data['olimp_id'])
+            self.db.execute(sql)
+            return json.dumps({"data": True}), 200
+        except Exception as e:
+            return get_error(e)

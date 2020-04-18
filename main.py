@@ -255,6 +255,18 @@ def add_subject():
     return subject.add(data)
 
 
+@app.route('/deletepupilsubject', methods=['POST'])
+def delete_pupil_subject():
+    data = request.get_json()
+    return pupil.delete_sub(data)
+
+
+@app.route('/deletepupilolympiad', methods=['POST'])
+def delete_pupil_olimp():
+    data = request.get_json()
+    return pupil.delete_olimp(data)
+
+
 @app.route('/deletesubject', methods=['POST'])
 def delete_subject():
     data = request.get_json()
