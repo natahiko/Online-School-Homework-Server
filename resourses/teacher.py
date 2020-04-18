@@ -6,28 +6,28 @@ class Teacher():
     def __init__(self, database):
         self.db = database
 
-    def register(self, json):
+    def register(self, data):
         # check all fields
-        if not check_all_parameters(json, ['id', 'name', 'surname', 'email', 'school_id', 'password', 'education']):
+        if not check_all_parameters(data, ['id', 'name', 'surname', 'email', 'school_id', 'password', 'education']):
             return json.dumps({"error": "Недостатньо данних"}), 400
-        if (not 'phd' in json):
-            json['phd'] = False
+        if (not 'phd' in data):
+            data['phd'] = False
         # check fields that can be NULL
-        json['patronymic'] = check_for_null(json, 'patronymic')
-        json['phone'] = check_for_null(json, 'phone')
+        data['patronymic'] = check_for_null(data, 'patronymic')
+        data['phone'] = check_for_null(data, 'phone')
 
         # hash password
-        json['password'] = get_hash(json['password'])
+        data['password'] = get_hash(data['password'])
 
         # try to add to db
         try:
             sql = "INSERT INTO teachers (teacher_id, name, surname, patronymic, phd, email, phone, school_id, education, password) " \
                   "VALUES ('%s', '%s','%s', %s, '%s', '%s', %s, '%s', '%s','%s');" % (
-                      json['id'], json['name'], json['surname'],
-                      json['patronymic'], json['phd'],
-                      json['email'], json['phone'],
-                      json['school_id'], json['education'],
-                      json['password'])
+                      data['id'], data['name'], data['surname'],
+                      data['patronymic'], data['phd'],
+                      data['email'], data['phone'],
+                      data['school_id'], data['education'],
+                      data['password'])
             self.db.execute(sql)
         except Exception as e:
             return get_error(e, 1)

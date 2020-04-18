@@ -214,12 +214,15 @@ class Subject():
         if surname == 'NULL':
             return json.dumps({"error": "Недостатньо данних"}), 400
         try:
-            print(surname)
             sql = "SELECT * FROM pupils WHERE NOT EXISTS (SELECT * FROM studying AS A WHERE subject_id IN (SELECT " \
                   "sub_id FROM subjects WHERE teacher_id IN (SELECT teacher_id FROM teachers WHERE surname=%s)) AND " \
                   "NOT EXISTS (SELECT * FROM studying WHERE studying.student_id=pupils.student_id AND " \
                   "A.subject_id=studying.subject_id));" % surname
             res = self.db.execute(sql)
+            sql2 = "SELECT teacher_id FROM teachers WHERE surname=%s;" % surname
+            res2 = self.db.execute(sql2)
+            if len(res2) < 1:
+                return json.dumps([]), 200
             result = []
             for pupil in res:
                 result.append({
@@ -229,6 +232,7 @@ class Subject():
                     "class": pupil[4],
                     "school_id": pupil[5]
                 })
+            print(result)
             return json.dumps(result), 200
         except Exception as e:
             return get_error(e)

@@ -7,30 +7,30 @@ class Pupil():
     def __init__(self, database):
         self.db = database
 
-    def register(self, json):
+    def register(self, data):
         # check all fields
-        if not check_all_parameters(json,
-                                    ['id', 'name', 'surname', 'surname', 'school_id', 'password', 'email', 'class']):
+        if not check_all_parameters(data, ['id', 'name', 'surname', 'surname', 'school_id',
+                                           'password', 'email', 'class']):
             return json.dumps({"error": "Недостатньо данних"}), 400
 
         # check fields that can be NULL
 
-        json['patronymic'] = check_for_null(json, 'patronymic')
-        json['phone'] = check_for_null(json, 'phone')
-        json['birth_date'] = check_for_null(json, 'birth_date')
+        data['patronymic'] = check_for_null(json, 'patronymic')
+        data['phone'] = check_for_null(json, 'phone')
+        data['birth_date'] = check_for_null(json, 'birth_date')
 
         # hash password
-        json['password'] = get_hash(json['password'])
+        data['password'] = get_hash(json['password'])
 
         # try to add to db
         try:
             sql = "INSERT INTO pupils (student_id,name, surname, patronymic, class, email, phone, birth_date, school_id, password) " \
                   "VALUES ('%s','%s', '%s', %s, '%s', '%s', %s, %s, '%s', '%s');" % (
-                      json['id'], json['name'], json['surname'],
-                      json['patronymic'], json['class'],
-                      json['email'], json['phone'],
-                      json['birth_date'], json['school_id'],
-                      json['password'])
+                      data['id'], data['name'], data['surname'],
+                      data['patronymic'], data['class'],
+                      data['email'], data['phone'],
+                      data['birth_date'], data['school_id'],
+                      data['password'])
             self.db.execute(sql)
         except Exception as e:
             return get_error(e)

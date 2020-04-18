@@ -30,23 +30,9 @@ subject = Subject(app.database)
 olimpiad = Olimpiad(app.database)
 
 
-@app.route('/deleteolimpiatask', methods=['POST'])
-def delete_olimp_task():
-    data = request.get_json()
-    if check_id(data):
-        return olimpiad.delete_task(data['id'])
-    return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
-
-
 @app.route("/getallcompetitions", methods=['GET'])
 def get_all_competition():
     return city_compete.get_all_competition()
-
-
-@app.route("/addcompetition", methods=['POST'])
-def add_competition():
-    data = request.get_json()
-    return city_compete.add_competition(data)
 
 
 @app.route("/getCompetitionNamesAndStages", methods=['GET'])
@@ -57,6 +43,40 @@ def get_competition_names_and_stages():
 @app.route("/getallschools", methods=['GET'])
 def get_all_schools():
     return school.get_all_schools()
+
+
+@app.route("/getallschools", methods=['GET'])
+def get_all_schools():
+    return school.get_all_schools()
+
+
+@app.route("/getCompetitionNamesAndStages", methods=['GET'])
+def get_competition_names_and_stages():
+    return city_compete.get_competition_names_and_stages()
+
+
+@app.route("/getallschools", methods=['GET'])
+def get_all_schools():
+    return school.get_all_schools()
+
+
+@app.route('/getpass', methods=['GET'])
+def get_pass():
+    return get_hash(request.get_json()['pass']), 200
+
+
+@app.route('/deleteolimpiatask', methods=['POST'])
+def delete_olimp_task():
+    data = request.get_json()
+    if check_id(data):
+        return olimpiad.delete_task(data['id'])
+    return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
+
+
+@app.route("/addcompetition", methods=['POST'])
+def add_competition():
+    data = request.get_json()
+    return city_compete.add_competition(data)
 
 
 @app.route('/getpupilanswer', methods=['POST'])

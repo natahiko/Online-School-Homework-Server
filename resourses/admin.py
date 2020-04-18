@@ -6,22 +6,22 @@ class Admin():
     def __init__(self, database):
         self.db = database
 
-    def register(self, json):
+    def register(self, data):
         # check all fields
-        if not check_all_parameters(json, ['login', 'name', 'surname', 'password', 'email']):
+        if not check_all_parameters(data, ['login', 'name', 'surname', 'password', 'email']):
             return json.dumps({"error": "Недостатньо данних"}), 400
 
         # check fields that can be NULL
-        json['notes'] = check_for_null(json, 'notes')
+        data['notes'] = check_for_null(data, 'notes')
         # hash password
-        json['password'] = get_hash(json['password'])
+        data['password'] = get_hash(data['password'])
 
         # try to add to db
         try:
             sql = "INSERT INTO admins (login, email, password, notes, name, surname) " \
-                  "VALUES ('{}','{}', '{}', {}, '{}', '{}');".format(json['login'], json['email'],
-                                                                     json['password'], json['notes'],
-                                                                     json['name'], json['surname'])
+                  "VALUES ('{}','{}', '{}', {}, '{}', '{}');".format(data['login'], data['email'],
+                                                                     data['password'], data['notes'],
+                                                                     data['name'], data['surname'])
             self.db.execute(sql)
         except Exception as e:
             return get_error(e)
