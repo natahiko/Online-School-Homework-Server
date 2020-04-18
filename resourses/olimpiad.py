@@ -216,7 +216,7 @@ class Olimpiad():
                   "(CURDate()),0,If(Month(birth_date)>Month(CURDate()),1,If(Day(birth_date)>Day(CURDate()),1,0))) AS age, AVG(mark) " \
                   "FROM compete INNER JOIN pupils p on compete.student_id = p.student_id INNER JOIN schools" \
                   " ON p.school_id = schools.code LEFT OUTER JOIN answers ON " \
-                  "p.student_id = answers.student_id WHERE compete.olimp_id='%s' ORDER BY surname GROUP BY student_id;" % id
+                  "p.student_id = answers.student_id WHERE compete.olimp_id='%s' GROUP BY student_id ;" % id
             res = self.db.execute(sql)
             result = []
             for i in res:
