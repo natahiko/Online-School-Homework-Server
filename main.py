@@ -45,26 +45,6 @@ def get_all_schools():
     return school.get_all_schools()
 
 
-@app.route("/getallschools", methods=['GET'])
-def get_all_schools():
-    return school.get_all_schools()
-
-
-@app.route("/getCompetitionNamesAndStages", methods=['GET'])
-def get_competition_names_and_stages():
-    return city_compete.get_competition_names_and_stages()
-
-
-@app.route("/getallschools", methods=['GET'])
-def get_all_schools():
-    return school.get_all_schools()
-
-
-@app.route('/getpass', methods=['GET'])
-def get_pass():
-    return get_hash(request.get_json()['pass']), 200
-
-
 @app.route('/deleteolimpiatask', methods=['POST'])
 def delete_olimp_task():
     data = request.get_json()
