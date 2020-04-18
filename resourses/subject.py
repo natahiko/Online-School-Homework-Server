@@ -182,14 +182,16 @@ class Subject():
             return get_error(e)
 
     def get_all_pupils(self, id):
+        print(id)
         try:
             sql = "SELECT p.student_id, p.name, p.surname, p.patronymic, p.birth_date, p.class, p.email, p.notes," \
                   " p.phone, school_id, schools.name, YEAR(CURDATE()) - YEAR(birth_date) - If(Month(birth_date)<Month" \
                   "(CURDate()),0,If(Month(birth_date)>Month(CURDate()),1,If(Day(birth_date)>Day(CURDate()),1,0))) AS age, AVG(mark)  " \
-                  "FROM studying INNER JOIN pupils p on studying.student_id = p.student_id INNER JOIN schools" \
+                  "FROM pupils p INNER JOIN studying on studying.student_id = p.student_id INNER JOIN schools" \
                   " ON p.school_id = schools.code LEFT OUTER JOIN answers ON " \
-                  "p.student_id = answers.student_id WHERE subject_id='%s' ORDER BY surname GROUP BY student_id;" % id
+                  "p.student_id = answers.student_id WHERE subject_id='%s' GROUP BY p.student_id" % id
             res = self.db.execute(sql)
+            print(res)
             result = []
             for i in res:
                 result.append({
@@ -205,6 +207,7 @@ class Subject():
                     "schoolname": i[10],
                     "avg": "-" if i[12] is None else float(i[12])
                 })
+                print(result)
             return json.dumps(result), 200
         except Exception as e:
             return get_error(e)
@@ -214,7 +217,7 @@ class Subject():
         if surname == 'NULL':
             return json.dumps({"error": "Недостатньо данних"}), 400
         try:
-            sql = "SELECT * FROM pupils WHERE NOT EXISTS (SELECT * FROM studying AS A WHERE subject_id IN (SELECT " \
+            sql = "SELECT student_id, surname, name, email, class, school_id FROM pupils WHERE NOT EXISTS (SELECT * FROM studying AS A WHERE subject_id IN (SELECT " \
                   "sub_id FROM subjects WHERE teacher_id IN (SELECT teacher_id FROM teachers WHERE surname=%s)) AND " \
                   "NOT EXISTS (SELECT * FROM studying WHERE studying.student_id=pupils.student_id AND " \
                   "A.subject_id=studying.subject_id));" % surname

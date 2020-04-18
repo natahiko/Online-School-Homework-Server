@@ -263,6 +263,22 @@ def delete_subject():
     return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
 
 
+@app.route('/deletepupil', methods=['POST'])
+def delete_pupil():
+    data = request.get_json()
+    if check_id(data):
+        return pupil.delete(data['id'])
+    return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
+
+
+@app.route('/deleteteacher', methods=['POST'])
+def delete_teacher():
+    data = request.get_json()
+    if check_id(data):
+        return teacher.delete(data['id'])
+    return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
+
+
 @app.route('/getallsubjectpupils', methods=['POST'])
 def get_all_subject_pupils():
     data = request.get_json()

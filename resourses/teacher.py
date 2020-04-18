@@ -164,3 +164,11 @@ class Teacher():
             }), 200
         except Exception as e:
             return get_error(e)
+
+    def delete(self, id):
+        try:
+            sql = "DELETE FROM teachers WHERE teacher_id='%s';" % id
+            self.db.execute(sql)
+            return json.dumps({"data": True}), 200
+        except Exception as e:
+            return get_error(e)

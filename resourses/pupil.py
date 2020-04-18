@@ -165,3 +165,11 @@ class Pupil():
             return json.dumps({"data": float(res[0][0])}), 200
         except Exception as e:
             return get_error(e)
+
+    def delete(self, id):
+        try:
+            sql = "DELETE FROM pupils WHERE student_id='%s';" % id
+            self.db.execute(sql)
+            return json.dumps({"data": True}), 200
+        except Exception as e:
+            return get_error(e)
