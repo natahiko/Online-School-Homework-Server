@@ -101,7 +101,7 @@ class Teacher():
                     "hyperlink": i[2],
                     "response": "" if i[3] is None else i[3],
                     "mark": "" if i[4] is None else i[4],
-                    "name": i[5] + ' ' + i[6] + ' (' + str(i[7]) + ')'
+                    "name": i[6] + ' ' + i[5] + ' (' + str(i[7]) + ')'
                 })
             return json.dumps(result), 200
         except Exception as e:

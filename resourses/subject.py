@@ -196,7 +196,7 @@ class Subject():
             for i in res:
                 result.append({
                     "id": i[0],
-                    "name": i[1] + " " + i[2] + " " + ("" if i[3] is None else i[3]),
+                    "name": i[2] + " " + i[1] + " " + ("" if i[3] is None else i[3]),
                     "birth_date": i[4].strftime("%Y.%m.%d %H:%M"),
                     "age": i[11],
                     "class": i[5],
