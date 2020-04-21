@@ -73,7 +73,7 @@ class CityCompete():
         data['notes'] = check_for_null(data, 'notes')
         data['place'] = check_for_null(data, 'place')
         try:
-            sql = "INSERT INTO competition (name_id, ev_date, place, stage, notes) VALUE ('%s','%s','%s','%s',%s);" % \
+            sql = "INSERT INTO competition (name_id, ev_date, place, stage, notes) VALUE ('%s','%s',%s,'%s',%s);" % \
                   (data['name_id'], data['date'], data['place'], data['stage_id'], data['notes'])
             self.db.execute(sql)
             return json.dumps({"data": True}), 200

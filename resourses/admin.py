@@ -25,7 +25,7 @@ class Admin():
             self.db.execute(sql)
         except Exception as e:
             return get_error(e)
-        return "ok", 201
+        return json.dumps({"data": True})
 
     def login(self, data):
         # check all fields
@@ -63,8 +63,9 @@ class Admin():
     def edit_info(self, data):
         if not check_id(data):
             return json.dumps({"error": "Некоректні дані (відсутнє id)"}), 400
+        data['notes'] = check_for_null(data, "notes")
         try:
-            sql = "UPDATE admins SET name='%s', surname='%s', email='%s', notes='%s' " \
+            sql = "UPDATE admins SET name='%s', surname='%s', email='%s', notes=%s " \
                   "WHERE id=%s;" % (data['name'], data['surname'], data['email'], data['notes'], data['id'])
 
             res = self.db.execute(sql)

@@ -9,7 +9,7 @@ class Pupil():
 
     def register(self, data):
         # check all fields
-        if not check_all_parameters(data, ['id', 'name', 'surname', 'surname', 'school_id',
+        if not check_all_parameters(data, ['id', 'name', 'surname', 'school_id',
                                            'password', 'email', 'class']):
             return json.dumps({"error": "Недостатньо данних"}), 400
 
@@ -34,7 +34,7 @@ class Pupil():
             self.db.execute(sql)
         except Exception as e:
             return get_error(e)
-        return "ok", 201
+        return json.dumps({"data": True}), 201
 
     def login(self, data):
         # check all fields
@@ -52,10 +52,11 @@ class Pupil():
             return get_error(e)
 
     def get_info(self, id):
+        print(id)
         try:
             sql = "SELECT *, YEAR(CURDATE()) - YEAR(birth_date) - If(Month(birth_date)<Month(CURDate()),0,If(Month" \
                   "(birth_date)>Month(CURDate()),1,If(Day(birth_date)>Day(CURDate()),1,0))) AS age, AVG(mark) " \
-                  " FROM pupils p INNER JOIN schools ON schools.code = p.school_id INNER JOIN answers ON " \
+                  " FROM pupils p INNER JOIN schools ON schools.code = p.school_id LEFT OUTER JOIN answers ON " \
                   "p.student_id = answers.student_id WHERE p.student_id='%s' GROUP BY answers.student_id;" % id
             res = self.db.execute(sql)
             print(res)
@@ -147,6 +148,7 @@ class Pupil():
             return get_error(e)
 
     def add_subject(self, data):
+        print(data);
         if not check_all_parameters(data, ['student_id', 'sub_id']):
             return json.dumps({"error": "Недостатньо данних"}), 400
         try:

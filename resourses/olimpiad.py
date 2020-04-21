@@ -242,6 +242,7 @@ class Olimpiad():
             return json.dumps({"error": "Недостатньо данних"}), 400
         data['notes'] = check_for_null(data, 'notes')
         try:
+            print(data)
             sql = "INSERT INTO additional_sources (caption, content, olimp_id, notes) VALUES ('%s','%s','%s',%s);" % \
                   (data['caption'], data['content'], data['source_id'], data['notes'])
             id = self.db.execute(sql)
