@@ -1,11 +1,5 @@
 # Online-School-Homework-Server
-*Client part:* https://github.com/solja484/Online-School-Homeworks
+*Client part:* https://github.com/natahiko/Online-School-Homeworks
 
 **Помилки повертаються як параметр не err, а error**
 ---
-
-**TODO:**
-- [x] рахувати вік учнів в sql
-- [ ] рахувати середню оцінку учня
-- [ ] рахувати кількість предметів (олімпіад) які викладає вчитель(учень)
-- [ ] Повертати правильні помилки якщо вчитель чи учень намагаються змінити email на існуючий у іншого
